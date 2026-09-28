@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Article;
 use App\Models\Category;
+use App\Services\ImageService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -44,7 +45,7 @@ class ArticleController extends Controller
             'konten' => ['required', 'string'],
             'category_id' => ['required', 'exists:categories,id'],
             'status' => ['required', 'in:draft,published'],
-            'gambar' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:3072'],
+            'gambar' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:10240'],
         ]);
 
         $validated['slug'] = Str::slug($validated['judul']) . '-' . Str::random(5);
@@ -55,7 +56,7 @@ class ArticleController extends Controller
         }
 
         if ($request->hasFile('gambar')) {
-            $validated['gambar'] = $request->file('gambar')->store('articles', 'public');
+            $validated['gambar'] = ImageService::compressAndStore($request->file('gambar'), 'articles', 1400, 900);
         }
 
         Article::create($validated);
@@ -76,7 +77,7 @@ class ArticleController extends Controller
             'konten' => ['required', 'string'],
             'category_id' => ['required', 'exists:categories,id'],
             'status' => ['required', 'in:draft,published'],
-            'gambar' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:3072'],
+            'gambar' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:10240'],
         ]);
 
         if ($article->judul !== $validated['judul']) {
@@ -91,7 +92,7 @@ class ArticleController extends Controller
             if ($article->gambar && !str_starts_with($article->gambar, 'http') && Storage::disk('public')->exists($article->gambar)) {
                 Storage::disk('public')->delete($article->gambar);
             }
-            $validated['gambar'] = $request->file('gambar')->store('articles', 'public');
+            $validated['gambar'] = ImageService::compressAndStore($request->file('gambar'), 'articles', 1400, 900);
         }
 
         $article->update($validated);
@@ -108,5 +109,19 @@ class ArticleController extends Controller
         $article->delete();
 
         return redirect()->route('admin.articles.index')->with('success', 'Artikel berita berhasil dihapus.');
+    }
+
+    public function uploadImage(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $request->validate([
+            'file' => ['required', 'image', 'mimes:jpg,jpeg,png,webp,gif', 'max:10240'],
+        ]);
+
+        $path = ImageService::compressAndStore($request->file('file'), 'articles/content', 1400, 1400);
+        $url = asset('storage/' . $path);
+
+        return response()->json([
+            'location' => $url,
+        ]);
     }
 }

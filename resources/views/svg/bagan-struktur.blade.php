@@ -45,8 +45,8 @@
   <rect x="40" y="40" width="1320" height="95" rx="16" fill="url(#headerGrad)" filter="url(#glowShadow)" />
   <rect x="40" y="131" width="1320" height="4" fill="url(#goldGrad)" rx="2" />
   
-  <text x="700" y="75" text-anchor="middle" fill="#fef08a" font-size="13" font-weight="700" letter-spacing="3">PEMERINTAH KABUPATEN PONOROGO</text>
-  <text x="700" y="103" text-anchor="middle" fill="#ffffff" font-size="22" font-weight="800" letter-spacing="1">BAGAN STRUKTUR ORGANISASI PEMERINTAH KECAMATAN MLARAK</text>
+  <text x="700" y="75" text-anchor="middle" fill="#fef08a" font-size="13" font-weight="700" letter-spacing="3">{{ $judul_instansi ?? 'PEMERINTAH KABUPATEN PONOROGO' }}</text>
+  <text x="700" y="103" text-anchor="middle" fill="#ffffff" font-size="22" font-weight="800" letter-spacing="1">{{ $judul_bagan ?? 'BAGAN STRUKTUR ORGANISASI KECAMATAN MLARAK' }}</text>
   <text x="700" y="122" text-anchor="middle" fill="#d1fae5" font-size="11" font-weight="500">Berdasarkan Peraturan Daerah &amp; Perbup Penataan Organisasi Perangkat Daerah Kabupaten Ponorogo</text>
 
   <!-- CONNECTING LINES (SVG PATHS) -->
@@ -80,8 +80,8 @@
     <rect width="320" height="90" rx="14" fill="#ffffff" stroke="#059669" stroke-width="2" />
     <path d="M 0 14 Q 0 0 14 0 L 306 0 Q 320 0 320 14 L 320 34 L 0 34 Z" fill="url(#camatGrad)" />
     <text x="160" y="23" text-anchor="middle" fill="#ffffff" font-size="13" font-weight="800" letter-spacing="1.5">CAMAT</text>
-    <text id="nama-camat" x="160" y="56" text-anchor="middle" fill="#0f172a" font-size="14" font-weight="700">JOKO SETIAWAN, S.STP, M.Si</text>
-    <text id="ket-camat" x="160" y="75" text-anchor="middle" fill="#047857" font-size="11" font-weight="600">Pembina Tingkat I (IV/b)</text>
+    <text id="nama-camat" x="160" y="56" text-anchor="middle" fill="#0f172a" font-size="{{ mb_strlen($camat_nama ?? '') > 28 ? '12.5' : '14' }}" font-weight="700">{{ $camat_nama ?? 'Drs. H. Bambang Sujarwo, M.Si' }}</text>
+    <text id="ket-camat" x="160" y="75" text-anchor="middle" fill="#047857" font-size="11" font-weight="600">{{ $camat_keterangan ?? 'Pembina Tingkat I (IV/b)' }}</text>
   </g>
 
   <!-- STAF KIRI: KELOMPOK JABATAN FUNGSIONAL (Box: x=215, y=295, w=250, h=80) -->
@@ -89,8 +89,8 @@
     <rect width="250" height="80" rx="12" fill="#f8fafc" stroke="#64748b" stroke-width="1.8" stroke-dasharray="4,3" />
     <path d="M 0 12 Q 0 0 12 0 L 238 0 Q 250 0 250 12 L 250 28 L 0 28 Z" fill="#475569" />
     <text x="125" y="19" text-anchor="middle" fill="#ffffff" font-size="11" font-weight="700" letter-spacing="0.5">KELOMPOK JABATAN FUNGSIONAL</text>
-    <text id="nama-fungsional" x="125" y="49" text-anchor="middle" fill="#334155" font-size="10.5" font-weight="600">Auditor, Arsiparis, Analis</text>
-    <text id="ket-fungsional" x="125" y="66" text-anchor="middle" fill="#64748b" font-size="10">Tenaga Teknis Profesional</text>
+    <text id="nama-fungsional" x="125" y="49" text-anchor="middle" fill="#334155" font-size="{{ mb_strlen($fungsional_nama ?? '') > 25 ? '10.5' : '12' }}" font-weight="600">{{ $fungsional_nama ?? 'Auditor, Arsiparis, Analis' }}</text>
+    <text id="ket-fungsional" x="125" y="66" text-anchor="middle" fill="#64748b" font-size="10">{{ $fungsional_keterangan ?? 'Tenaga Teknis Profesional' }}</text>
   </g>
 
   <!-- LEVEL 2: SEKRETARIS KECAMATAN (Box: x=540, y=295, w=320, h=95) -->
@@ -98,8 +98,8 @@
     <rect width="320" height="95" rx="14" fill="#ffffff" stroke="#0d9488" stroke-width="2" />
     <path d="M 0 14 Q 0 0 14 0 L 306 0 Q 320 0 320 14 L 320 34 L 0 34 Z" fill="url(#sekcamGrad)" />
     <text x="160" y="23" text-anchor="middle" fill="#ffffff" font-size="12" font-weight="800" letter-spacing="1">SEKRETARIS KECAMATAN</text>
-    <text id="nama-sekcam" x="160" y="57" text-anchor="middle" fill="#0f172a" font-size="13" font-weight="700">JOANA DA COSTA, S.Sos, M.Si</text>
-    <text id="ket-sekcam" x="160" y="75" text-anchor="middle" fill="#0d9488" font-size="11" font-weight="600">Penata Tingkat I (III/d)</text>
+    <text id="nama-sekcam" x="160" y="57" text-anchor="middle" fill="#0f172a" font-size="{{ mb_strlen($sekcam_nama ?? '') > 28 ? '11.5' : '13' }}" font-weight="700">{{ $sekcam_nama ?? 'Wahyu Hidayat, S.Sos, M.M' }}</text>
+    <text id="ket-sekcam" x="160" y="75" text-anchor="middle" fill="#0d9488" font-size="11" font-weight="600">{{ $sekcam_keterangan ?? 'Penata Tingkat I (III/d)' }}</text>
   </g>
 
   <!-- SUBBAGIAN KANAN -->
@@ -108,7 +108,7 @@
     <rect width="270" height="62" rx="10" fill="#ffffff" stroke="#14b8a6" stroke-width="1.5" />
     <path d="M 0 10 Q 0 0 10 0 L 260 0 Q 270 0 270 10 L 270 24 L 0 24 Z" fill="#0f766e" />
     <text x="135" y="16" text-anchor="middle" fill="#ffffff" font-size="10.5" font-weight="700">SUBBAG PERENCANAAN &amp; KEUANGAN</text>
-    <text id="nama-subbag-keuangan" x="135" y="44" text-anchor="middle" fill="#1e293b" font-size="10" font-weight="600">Penyusunan Anggaran &amp; Pelaporan</text>
+    <text id="nama-subbag-keuangan" x="135" y="44" text-anchor="middle" fill="#1e293b" font-size="{{ mb_strlen($subbag_keuangan_nama ?? '') > 25 ? '10' : '11' }}" font-weight="600">{{ $subbag_keuangan_nama ?? 'Penyusunan Anggaran & Pelaporan' }}</text>
   </g>
 
   <!-- Subbag Umum & Kepegawaian (x=1040, y=320, w=270, h=62) -->
@@ -116,7 +116,7 @@
     <rect width="270" height="62" rx="10" fill="#ffffff" stroke="#14b8a6" stroke-width="1.5" />
     <path d="M 0 10 Q 0 0 10 0 L 260 0 Q 270 0 270 10 L 270 24 L 0 24 Z" fill="#0f766e" />
     <text x="135" y="16" text-anchor="middle" fill="#ffffff" font-size="10.5" font-weight="700">SUBBAG UMUM &amp; KEPEGAWAIAN</text>
-    <text id="nama-subbag-umum" x="135" y="44" text-anchor="middle" fill="#1e293b" font-size="10" font-weight="600">Tata Usaha, Aset &amp; Personalia</text>
+    <text id="nama-subbag-umum" x="135" y="44" text-anchor="middle" fill="#1e293b" font-size="{{ mb_strlen($subbag_umum_nama ?? '') > 25 ? '10' : '11' }}" font-weight="600">{{ $subbag_umum_nama ?? 'Tata Usaha, Aset & Personalia' }}</text>
   </g>
 
   <!-- LEVEL 3: 5 SEKSI KECAMATAN -->
@@ -125,8 +125,8 @@
     <rect width="220" height="165" rx="12" fill="#ffffff" stroke="#3b82f6" stroke-width="1.8" />
     <path d="M 0 12 Q 0 0 12 0 L 208 0 Q 220 0 220 12 L 220 32 L 0 32 Z" fill="#1d4ed8" />
     <text x="110" y="21" text-anchor="middle" fill="#ffffff" font-size="11" font-weight="800">SEKSI TATA PEMERINTAHAN</text>
-    <text id="nama-kasi-tapem" x="110" y="54" text-anchor="middle" fill="#0f172a" font-size="10.5" font-weight="700">Endang Sulistyowati, S.IP</text>
-    <text id="ket-kasi-tapem" x="110" y="70" text-anchor="middle" fill="#2563eb" font-size="10.5" font-weight="600">Kepala Seksi</text>
+    <text id="nama-kasi-tapem" x="110" y="54" text-anchor="middle" fill="#0f172a" font-size="{{ mb_strlen($kasi_tapem_nama ?? '') > 22 ? '10.5' : '12' }}" font-weight="700">{{ $kasi_tapem_nama ?? 'Endang Sulistyowati, S.IP' }}</text>
+    <text id="ket-kasi-tapem" x="110" y="70" text-anchor="middle" fill="#2563eb" font-size="10.5" font-weight="600">{{ $kasi_tapem_keterangan ?? 'Kepala Seksi' }}</text>
     <line x1="20" y1="80" x2="200" y2="80" stroke="#e2e8f0" stroke-width="1" />
     <text x="110" y="100" text-anchor="middle" fill="#475569" font-size="10">Lingkup Pelayanan:</text>
     <text x="110" y="118" text-anchor="middle" fill="#64748b" font-size="9.5">• Administrasi Kependudukan</text>
@@ -139,8 +139,8 @@
     <rect width="220" height="165" rx="12" fill="#ffffff" stroke="#e11d48" stroke-width="1.8" />
     <path d="M 0 12 Q 0 0 12 0 L 208 0 Q 220 0 220 12 L 220 32 L 0 32 Z" fill="#be123c" />
     <text x="110" y="21" text-anchor="middle" fill="#ffffff" font-size="11" font-weight="800">SEKSI TRANTIBUM</text>
-    <text id="nama-kasi-trantib" x="110" y="54" text-anchor="middle" fill="#0f172a" font-size="10.5" font-weight="700">Kapten (Purn) Sunardi, S.H</text>
-    <text id="ket-kasi-trantib" x="110" y="70" text-anchor="middle" fill="#e11d48" font-size="10.5" font-weight="600">Kepala Seksi</text>
+    <text id="nama-kasi-trantib" x="110" y="54" text-anchor="middle" fill="#0f172a" font-size="{{ mb_strlen($kasi_trantib_nama ?? '') > 22 ? '10.5' : '12' }}" font-weight="700">{{ $kasi_trantib_nama ?? 'Kapten (Purn) Sunardi, S.H' }}</text>
+    <text id="ket-kasi-trantib" x="110" y="70" text-anchor="middle" fill="#e11d48" font-size="10.5" font-weight="600">{{ $kasi_trantib_keterangan ?? 'Kepala Seksi' }}</text>
     <line x1="20" y1="80" x2="200" y2="80" stroke="#e2e8f0" stroke-width="1" />
     <text x="110" y="100" text-anchor="middle" fill="#475569" font-size="10">Lingkup Pelayanan:</text>
     <text x="110" y="118" text-anchor="middle" fill="#64748b" font-size="9.5">• Ketentraman &amp; Ketertiban</text>
@@ -153,8 +153,8 @@
     <rect width="220" height="165" rx="12" fill="#ffffff" stroke="#8b5cf6" stroke-width="1.8" />
     <path d="M 0 12 Q 0 0 12 0 L 208 0 Q 220 0 220 12 L 220 32 L 0 32 Z" fill="#6d28d9" />
     <text x="110" y="21" text-anchor="middle" fill="#ffffff" font-size="11" font-weight="800">SEKSI KESEJAHTERAAN SOSIAL</text>
-    <text id="nama-kasi-kesra" x="110" y="54" text-anchor="middle" fill="#0f172a" font-size="12" font-weight="700">Dra. Siti Rahmawati</text>
-    <text id="ket-kasi-kesra" x="110" y="70" text-anchor="middle" fill="#8b5cf6" font-size="10.5" font-weight="600">Kepala Seksi</text>
+    <text id="nama-kasi-kesra" x="110" y="54" text-anchor="middle" fill="#0f172a" font-size="{{ mb_strlen($kasi_kesra_nama ?? '') > 22 ? '10.5' : '12' }}" font-weight="700">{{ $kasi_kesra_nama ?? 'Dra. Siti Rahmawati' }}</text>
+    <text id="ket-kasi-kesra" x="110" y="70" text-anchor="middle" fill="#8b5cf6" font-size="10.5" font-weight="600">{{ $kasi_kesra_keterangan ?? 'Kepala Seksi' }}</text>
     <line x1="20" y1="80" x2="200" y2="80" stroke="#e2e8f0" stroke-width="1" />
     <text x="110" y="100" text-anchor="middle" fill="#475569" font-size="10">Lingkup Pelayanan:</text>
     <text x="110" y="118" text-anchor="middle" fill="#64748b" font-size="9.5">• Program Bantuan Sosial (PKH/BPNT)</text>
@@ -167,8 +167,8 @@
     <rect width="220" height="165" rx="12" fill="#ffffff" stroke="#f59e0b" stroke-width="1.8" />
     <path d="M 0 12 Q 0 0 12 0 L 208 0 Q 220 0 220 12 L 220 32 L 0 32 Z" fill="#d97706" />
     <text x="110" y="21" text-anchor="middle" fill="#ffffff" font-size="11" font-weight="800">SEKSI PMD</text>
-    <text id="nama-kasi-pmd" x="110" y="54" text-anchor="middle" fill="#0f172a" font-size="12" font-weight="700">Ir. Agus Supriyanto</text>
-    <text id="ket-kasi-pmd" x="110" y="70" text-anchor="middle" fill="#b45309" font-size="10.5" font-weight="600">Kepala Seksi</text>
+    <text id="nama-kasi-pmd" x="110" y="54" text-anchor="middle" fill="#0f172a" font-size="{{ mb_strlen($kasi_pmd_nama ?? '') > 22 ? '10.5' : '12' }}" font-weight="700">{{ $kasi_pmd_nama ?? 'Ir. Agus Supriyanto' }}</text>
+    <text id="ket-kasi-pmd" x="110" y="70" text-anchor="middle" fill="#b45309" font-size="10.5" font-weight="600">{{ $kasi_pmd_keterangan ?? 'Kepala Seksi' }}</text>
     <line x1="20" y1="80" x2="200" y2="80" stroke="#e2e8f0" stroke-width="1" />
     <text x="110" y="100" text-anchor="middle" fill="#475569" font-size="10">Lingkup Pelayanan:</text>
     <text x="110" y="118" text-anchor="middle" fill="#64748b" font-size="9.5">• Pembinaan Dana Desa (APBDes)</text>
@@ -181,8 +181,8 @@
     <rect width="220" height="165" rx="12" fill="#ffffff" stroke="#10b981" stroke-width="1.8" />
     <path d="M 0 12 Q 0 0 12 0 L 208 0 Q 220 0 220 12 L 220 32 L 0 32 Z" fill="#047857" />
     <text x="110" y="21" text-anchor="middle" fill="#ffffff" font-size="11" font-weight="800">SEKSI PELAYANAN UMUM</text>
-    <text id="nama-kasi-pelayanan" x="110" y="54" text-anchor="middle" fill="#0f172a" font-size="12" font-weight="700">Rina Wijayanti, S.E</text>
-    <text id="ket-kasi-pelayanan" x="110" y="70" text-anchor="middle" fill="#047857" font-size="10.5" font-weight="600">Kepala Seksi</text>
+    <text id="nama-kasi-pelayanan" x="110" y="54" text-anchor="middle" fill="#0f172a" font-size="{{ mb_strlen($kasi_pelayanan_nama ?? '') > 22 ? '10.5' : '12' }}" font-weight="700">{{ $kasi_pelayanan_nama ?? 'Rina Wijayanti, S.E' }}</text>
+    <text id="ket-kasi-pelayanan" x="110" y="70" text-anchor="middle" fill="#047857" font-size="10.5" font-weight="600">{{ $kasi_pelayanan_keterangan ?? 'Kepala Seksi' }}</text>
     <line x1="20" y1="80" x2="200" y2="80" stroke="#e2e8f0" stroke-width="1" />
     <text x="110" y="100" text-anchor="middle" fill="#475569" font-size="10">Lingkup Pelayanan:</text>
     <text x="110" y="118" text-anchor="middle" fill="#64748b" font-size="9.5">• Loket Pelayanan Terpadu (PATEN)</text>
@@ -200,55 +200,55 @@
     <!-- Row 1 -->
     <g transform="translate(30, 48)">
       <rect x="0" y="0" width="225" height="26" rx="6" fill="#ffffff" stroke="#bbf7d0" stroke-width="1"/>
-      <text id="desa-1" x="112" y="17" text-anchor="middle" fill="#14532d" font-size="11" font-weight="600">1. Desa Mlarak</text>
+      <text id="desa-1" x="112" y="17" text-anchor="middle" fill="#14532d" font-size="11" font-weight="600">1. {{ $villages[0] ?? 'Desa Mlarak' }}</text>
       
       <rect x="250" y="0" width="225" height="26" rx="6" fill="#ffffff" stroke="#bbf7d0" stroke-width="1"/>
-      <text id="desa-2" x="362" y="17" text-anchor="middle" fill="#14532d" font-size="11" font-weight="600">2. Desa Bajang</text>
+      <text id="desa-2" x="362" y="17" text-anchor="middle" fill="#14532d" font-size="11" font-weight="600">2. {{ $villages[1] ?? 'Desa Bajang' }}</text>
       
       <rect x="500" y="0" width="225" height="26" rx="6" fill="#ffffff" stroke="#bbf7d0" stroke-width="1"/>
-      <text id="desa-3" x="612" y="17" text-anchor="middle" fill="#14532d" font-size="11" font-weight="600">3. Desa Candi</text>
+      <text id="desa-3" x="612" y="17" text-anchor="middle" fill="#14532d" font-size="11" font-weight="600">3. {{ $villages[2] ?? 'Desa Candi' }}</text>
       
       <rect x="750" y="0" width="225" height="26" rx="6" fill="#ffffff" stroke="#bbf7d0" stroke-width="1"/>
-      <text id="desa-4" x="862" y="17" text-anchor="middle" fill="#14532d" font-size="11" font-weight="600">4. Desa Gontor</text>
+      <text id="desa-4" x="862" y="17" text-anchor="middle" fill="#14532d" font-size="11" font-weight="600">4. {{ $villages[3] ?? 'Desa Gontor' }}</text>
       
       <rect x="1000" y="0" width="240" height="26" rx="6" fill="#ffffff" stroke="#bbf7d0" stroke-width="1"/>
-      <text id="desa-5" x="1120" y="17" text-anchor="middle" fill="#14532d" font-size="11" font-weight="600">5. Desa Jabung</text>
+      <text id="desa-5" x="1120" y="17" text-anchor="middle" fill="#14532d" font-size="11" font-weight="600">5. {{ $villages[4] ?? 'Desa Jabung' }}</text>
     </g>
 
     <!-- Row 2 -->
     <g transform="translate(30, 80)">
       <rect x="0" y="0" width="225" height="26" rx="6" fill="#ffffff" stroke="#bbf7d0" stroke-width="1"/>
-      <text id="desa-6" x="112" y="17" text-anchor="middle" fill="#14532d" font-size="11" font-weight="600">6. Desa Joresan</text>
+      <text id="desa-6" x="112" y="17" text-anchor="middle" fill="#14532d" font-size="11" font-weight="600">6. {{ $villages[5] ?? 'Desa Joresan' }}</text>
       
       <rect x="250" y="0" width="225" height="26" rx="6" fill="#ffffff" stroke="#bbf7d0" stroke-width="1"/>
-      <text id="desa-7" x="362" y="17" text-anchor="middle" fill="#14532d" font-size="11" font-weight="600">7. Desa Kaponan</text>
+      <text id="desa-7" x="362" y="17" text-anchor="middle" fill="#14532d" font-size="11" font-weight="600">7. {{ $villages[6] ?? 'Desa Kaponan' }}</text>
       
       <rect x="500" y="0" width="225" height="26" rx="6" fill="#ffffff" stroke="#bbf7d0" stroke-width="1"/>
-      <text id="desa-8" x="612" y="17" text-anchor="middle" fill="#14532d" font-size="11" font-weight="600">8. Desa Ngrukem</text>
+      <text id="desa-8" x="612" y="17" text-anchor="middle" fill="#14532d" font-size="11" font-weight="600">8. {{ $villages[7] ?? 'Desa Ngrukem' }}</text>
       
       <rect x="750" y="0" width="225" height="26" rx="6" fill="#ffffff" stroke="#bbf7d0" stroke-width="1"/>
-      <text id="desa-9" x="862" y="17" text-anchor="middle" fill="#14532d" font-size="11" font-weight="600">9. Desa Nglumpang</text>
+      <text id="desa-9" x="862" y="17" text-anchor="middle" fill="#14532d" font-size="11" font-weight="600">9. {{ $villages[8] ?? 'Desa Nglumpang' }}</text>
       
       <rect x="1000" y="0" width="240" height="26" rx="6" fill="#ffffff" stroke="#bbf7d0" stroke-width="1"/>
-      <text id="desa-10" x="1120" y="17" text-anchor="middle" fill="#14532d" font-size="11" font-weight="600">10. Desa Serangan</text>
+      <text id="desa-10" x="1120" y="17" text-anchor="middle" fill="#14532d" font-size="11" font-weight="600">10. {{ $villages[9] ?? 'Desa Serangan' }}</text>
     </g>
 
     <!-- Row 3 -->
     <g transform="translate(30, 112)">
       <rect x="0" y="0" width="225" height="26" rx="6" fill="#ffffff" stroke="#bbf7d0" stroke-width="1"/>
-      <text id="desa-11" x="112" y="17" text-anchor="middle" fill="#14532d" font-size="11" font-weight="600">11. Desa Siwalan</text>
+      <text id="desa-11" x="112" y="17" text-anchor="middle" fill="#14532d" font-size="11" font-weight="600">11. {{ $villages[10] ?? 'Desa Siwalan' }}</text>
       
       <rect x="250" y="0" width="225" height="26" rx="6" fill="#ffffff" stroke="#bbf7d0" stroke-width="1"/>
-      <text id="desa-12" x="362" y="17" text-anchor="middle" fill="#14532d" font-size="11" font-weight="600">12. Desa Suren</text>
+      <text id="desa-12" x="362" y="17" text-anchor="middle" fill="#14532d" font-size="11" font-weight="600">12. {{ $villages[11] ?? 'Desa Suren' }}</text>
       
       <rect x="500" y="0" width="225" height="26" rx="6" fill="#ffffff" stroke="#bbf7d0" stroke-width="1"/>
-      <text id="desa-13" x="612" y="17" text-anchor="middle" fill="#14532d" font-size="11" font-weight="600">13. Desa Turen</text>
+      <text id="desa-13" x="612" y="17" text-anchor="middle" fill="#14532d" font-size="11" font-weight="600">13. {{ $villages[12] ?? 'Desa Turen' }}</text>
       
       <rect x="750" y="0" width="225" height="26" rx="6" fill="#ffffff" stroke="#bbf7d0" stroke-width="1"/>
-      <text id="desa-14" x="862" y="17" text-anchor="middle" fill="#14532d" font-size="11" font-weight="600">14. Desa Totokan</text>
+      <text id="desa-14" x="862" y="17" text-anchor="middle" fill="#14532d" font-size="11" font-weight="600">14. {{ $villages[13] ?? 'Desa Totokan' }}</text>
       
       <rect x="1000" y="0" width="240" height="26" rx="6" fill="#ffffff" stroke="#bbf7d0" stroke-width="1"/>
-      <text id="desa-15" x="1120" y="17" text-anchor="middle" fill="#14532d" font-size="11" font-weight="600">15. Desa Gandu</text>
+      <text id="desa-15" x="1120" y="17" text-anchor="middle" fill="#14532d" font-size="11" font-weight="600">15. {{ $villages[14] ?? 'Desa Gandu' }}</text>
     </g>
   </g>
 

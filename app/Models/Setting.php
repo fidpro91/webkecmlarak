@@ -55,10 +55,14 @@ class Setting extends Model
     public static function baganStrukturUrl(): string
     {
         $custom = self::get('bagan_struktur_organisasi');
+        $svgPath = public_path('images/bagan-struktur-organisasi.svg');
+        $version = file_exists($svgPath) ? '?v=' . filemtime($svgPath) : '';
+
         if (!empty($custom)) {
-            return $custom;
+            return str_contains($custom, '?') ? $custom : ($custom . $version);
         }
-        return asset('images/bagan-struktur-organisasi.svg');
+
+        return asset('images/bagan-struktur-organisasi.svg') . $version;
     }
 
     public static function logoUrl(): string

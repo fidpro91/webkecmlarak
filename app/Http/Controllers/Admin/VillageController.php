@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Village;
+use App\Services\ImageService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -39,13 +40,13 @@ class VillageController extends Controller
             'jumlah_penduduk' => ['required', 'integer', 'min:0'],
             'luas_wilayah' => ['nullable', 'string', 'max:50'],
             'deskripsi' => ['nullable', 'string'],
-            'foto' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:3072'],
+            'foto' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:10240'],
         ]);
 
         $validated['slug'] = Str::slug($validated['nama']);
 
         if ($request->hasFile('foto')) {
-            $validated['foto'] = $request->file('foto')->store('villages', 'public');
+            $validated['foto'] = ImageService::compressAndStore($request->file('foto'), 'villages', 1200, 800);
         }
 
         Village::create($validated);
@@ -66,7 +67,7 @@ class VillageController extends Controller
             'jumlah_penduduk' => ['required', 'integer', 'min:0'],
             'luas_wilayah' => ['nullable', 'string', 'max:50'],
             'deskripsi' => ['nullable', 'string'],
-            'foto' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:3072'],
+            'foto' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:10240'],
         ]);
 
         if ($village->nama !== $validated['nama']) {
@@ -77,7 +78,7 @@ class VillageController extends Controller
             if ($village->foto && !str_starts_with($village->foto, 'http') && Storage::disk('public')->exists($village->foto)) {
                 Storage::disk('public')->delete($village->foto);
             }
-            $validated['foto'] = $request->file('foto')->store('villages', 'public');
+            $validated['foto'] = ImageService::compressAndStore($request->file('foto'), 'villages', 1200, 800);
         }
 
         $village->update($validated);

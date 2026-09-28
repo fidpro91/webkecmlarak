@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Setting;
+use App\Services\BaganSvgService;
+use App\Services\ImageService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -48,13 +50,13 @@ class SettingController extends Controller
         // Handle file uploads for logo and foto_camat
         if ($request->hasFile('logo')) {
             $request->validate([
-                'logo' => ['image', 'mimes:png,jpg,jpeg,svg,webp', 'max:2048'],
+                'logo' => ['image', 'mimes:png,jpg,jpeg,svg,webp', 'max:10240'],
             ]);
             $currentLogo = Setting::get('logo');
             if ($currentLogo && str_starts_with($currentLogo, 'settings/') && Storage::disk('public')->exists($currentLogo)) {
                 Storage::disk('public')->delete($currentLogo);
             }
-            $logoPath = $request->file('logo')->store('settings', 'public');
+            $logoPath = ImageService::compressAndStore($request->file('logo'), 'settings', 600, 600);
             Setting::set('logo', $logoPath);
         }
 
@@ -68,30 +70,31 @@ class SettingController extends Controller
 
         if ($request->hasFile('foto_camat_upload')) {
             $request->validate([
-                'foto_camat_upload' => ['image', 'mimes:png,jpg,jpeg,webp', 'max:3072'],
+                'foto_camat_upload' => ['image', 'mimes:png,jpg,jpeg,webp', 'max:10240'],
             ]);
-            $camatPath = $request->file('foto_camat_upload')->store('settings', 'public');
+            $camatPath = ImageService::compressAndStore($request->file('foto_camat_upload'), 'settings', 800, 1000);
             Setting::set('foto_camat', Storage::url($camatPath));
         }
 
         if ($request->hasFile('bagan_struktur_organisasi_upload')) {
             $request->validate([
-                'bagan_struktur_organisasi_upload' => ['image', 'mimes:png,jpg,jpeg,webp,svg', 'max:10240'],
+                'bagan_struktur_organisasi_upload' => ['file', 'mimes:svg', 'max:5120'],
+            ], [
+                'bagan_struktur_organisasi_upload.mimes' => 'Berkas bagan harus berupa gambar vektor berformat SVG (.svg). Format bitmap (PNG/JPG) tidak didukung agar sistem dapat memetakan jabatan secara otomatis.',
+                'bagan_struktur_organisasi_upload.max' => 'Ukuran berkas SVG maksimal adalah 5 MB.',
             ]);
-            $currentBagan = Setting::get('bagan_struktur_organisasi');
-            if ($currentBagan && str_starts_with($currentBagan, '/storage/settings/') && Storage::disk('public')->exists(str_replace('/storage/', '', $currentBagan))) {
-                Storage::disk('public')->delete(str_replace('/storage/', '', $currentBagan));
+
+            $result = BaganSvgService::processUploadedSvg($request->file('bagan_struktur_organisasi_upload'));
+            if (!$result['success']) {
+                return back()->withErrors(['bagan_struktur_organisasi_upload' => $result['message']]);
             }
-            $baganPath = $request->file('bagan_struktur_organisasi_upload')->store('settings', 'public');
-            Setting::set('bagan_struktur_organisasi', Storage::url($baganPath));
         }
 
         if ($request->boolean('hapus_bagan_struktur')) {
-            $currentBagan = Setting::get('bagan_struktur_organisasi');
-            if ($currentBagan && str_starts_with($currentBagan, '/storage/settings/') && Storage::disk('public')->exists(str_replace('/storage/', '', $currentBagan))) {
-                Storage::disk('public')->delete(str_replace('/storage/', '', $currentBagan));
-            }
-            Setting::set('bagan_struktur_organisasi', null);
+            BaganSvgService::resetToStandard();
+        } else {
+            // Sinkronkan data bagan dengan pengaturan nama camat / instansi terbaru
+            BaganSvgService::sync();
         }
 
         Setting::clearCache();

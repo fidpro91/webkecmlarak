@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Gallery;
+use App\Services\ImageService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -32,7 +33,7 @@ class GalleryController extends Controller
             'judul' => ['required', 'string', 'max:255'],
             'tipe' => ['required', 'in:foto,video'],
             'deskripsi' => ['nullable', 'string'],
-            'file_foto' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
+            'file_foto' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:10240'],
             'file_video_url' => ['nullable', 'string', 'url'],
         ]);
 
@@ -40,7 +41,7 @@ class GalleryController extends Controller
             if (!$request->hasFile('file_foto')) {
                 return back()->withErrors(['file_foto' => 'File foto wajib diunggah.'])->withInput();
             }
-            $validated['file'] = $request->file('file_foto')->store('galleries', 'public');
+            $validated['file'] = ImageService::compressAndStore($request->file('file_foto'), 'galleries', 1920, 1400);
         } else {
             if (empty($validated['file_video_url'])) {
                 return back()->withErrors(['file_video_url' => 'URL Video (YouTube) wajib diisi.'])->withInput();
@@ -69,7 +70,7 @@ class GalleryController extends Controller
             'judul' => ['required', 'string', 'max:255'],
             'tipe' => ['required', 'in:foto,video'],
             'deskripsi' => ['nullable', 'string'],
-            'file_foto' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
+            'file_foto' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:10240'],
             'file_video_url' => ['nullable', 'string', 'url'],
         ]);
 
@@ -80,7 +81,7 @@ class GalleryController extends Controller
                 if ($gallery->file && !str_starts_with($gallery->file, 'http') && Storage::disk('public')->exists($gallery->file)) {
                     Storage::disk('public')->delete($gallery->file);
                 }
-                $file = $request->file('file_foto')->store('galleries', 'public');
+                $file = ImageService::compressAndStore($request->file('file_foto'), 'galleries', 1920, 1400);
             }
         } else {
             if ($request->filled('file_video_url')) {

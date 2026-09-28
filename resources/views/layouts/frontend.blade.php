@@ -23,7 +23,6 @@
         $isHome = request()->routeIs('home');
     @endphp
 
-    @if(!$isHome)
     <!-- 1. Top Bar -->
     <div class="bg-[#45080e] text-rose-100 text-xs py-2 border-b border-[#5c0c16]">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-2">
@@ -69,50 +68,68 @@
             </div>
         </div>
     </div>
-    @endif
 
     <!-- 2. Main Navigation Bar -->
     <header x-data="{ 
                 mobileMenuOpen: false, 
-                isHome: {{ $isHome ? 'true' : 'false' }},
+                atTop: true,
                 scrolled: false,
                 mouseNearTop: false,
+                isHovering: false,
+                scrollUp: false,
+                lastScrollY: 0,
                 mouseHideTimer: null,
-                get visible() { return this.scrolled || this.mouseNearTop; },
+                isTouch: false,
+                get visible() { 
+                    return this.atTop || this.mouseNearTop || this.isHovering || this.mobileMenuOpen || this.scrollUp; 
+                },
                 init() {
-                    this.scrolled = this.isHome ? (window.pageYOffset > 80) : (window.pageYOffset > 30);
-                    if (this.isHome) {
-                        window.addEventListener('mousemove', (e) => {
-                            if (e.clientY <= 60) {
-                                this.mouseNearTop = true;
-                                clearTimeout(this.mouseHideTimer);
-                            } else if (e.clientY > 120) {
-                                clearTimeout(this.mouseHideTimer);
-                                this.mouseHideTimer = setTimeout(() => {
+                    this.isTouch = window.matchMedia && window.matchMedia('(hover: none)').matches;
+                    this.lastScrollY = window.pageYOffset || 0;
+                    this.atTop = (this.lastScrollY <= 80);
+                    this.scrolled = !this.atTop;
+                    
+                    window.addEventListener('mousemove', (e) => {
+                        if (e.clientY <= 60) {
+                            this.mouseNearTop = true;
+                            clearTimeout(this.mouseHideTimer);
+                        } else if (e.clientY > 120 && !this.isHovering) {
+                            clearTimeout(this.mouseHideTimer);
+                            this.mouseHideTimer = setTimeout(() => {
+                                if (!this.isHovering) {
                                     this.mouseNearTop = false;
-                                }, 800);
-                            }
-                        });
+                                }
+                            }, 600);
+                        }
+                    });
+                },
+                onScroll() {
+                    const currentY = window.pageYOffset || 0;
+                    this.atTop = (currentY <= 80);
+                    this.scrolled = !this.atTop;
+                    if (currentY > this.lastScrollY + 5) {
+                        // Scrolling down: auto-hide header
+                        this.scrollUp = false;
+                        this.mouseNearTop = false;
+                        if (!this.atTop) {
+                            this.mobileMenuOpen = false;
+                        }
+                    } else if (this.isTouch && this.lastScrollY - currentY > 15) {
+                        // On touch/mobile devices, scrolling up reveals header
+                        this.scrollUp = true;
                     }
+                    this.lastScrollY = currentY <= 0 ? 0 : currentY;
                 }
             }" 
             x-init="init()"
-            @scroll.window="
-                if (isHome) {
-                    scrolled = (window.pageYOffset > 80);
-                    if (!scrolled) mobileMenuOpen = false;
-                } else {
-                    scrolled = (window.pageYOffset > 30);
-                }
-            "
+            @mouseenter="isHovering = true; clearTimeout(mouseHideTimer);"
+            @mouseleave="isHovering = false; if (!atTop) { mouseHideTimer = setTimeout(() => { mouseNearTop = false; }, 400); }"
+            @scroll.window="onScroll()"
             :class="{
-                'fixed top-0 left-0 right-0 z-50': isHome,
-                'sticky top-0 z-40': !isHome,
                 'translate-y-0 opacity-100 shadow-md bg-white/95 backdrop-blur-md py-2.5 pointer-events-auto border-b border-slate-100': visible,
-                '-translate-y-full opacity-0 pointer-events-none py-0 border-none': isHome && !visible,
-                'bg-white shadow-sm py-4 translate-y-0 opacity-100 border-b border-slate-100': !isHome && !scrolled
+                '-translate-y-full opacity-0 pointer-events-none py-0 border-none': !visible
             }"
-            class="transition-all duration-300 transform {{ $isHome ? 'fixed top-0 left-0 right-0 z-50 -translate-y-full opacity-0 pointer-events-none border-none' : 'sticky top-0 z-40 bg-white shadow-sm py-4 border-b border-slate-100' }}">
+            class="transition-all duration-300 transform sticky top-0 z-50 translate-y-0 opacity-100 shadow-md bg-white/95 backdrop-blur-md py-2.5 pointer-events-auto border-b border-slate-100">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between">
                 <!-- Brand / Logo -->
@@ -241,7 +258,7 @@
 
     <!-- Flash Notifications -->
     @if(session('success') || session('error'))
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4 {{ $isHome ? 'pt-24' : '' }}">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
         @if(session('success'))
             <div x-data="{ show: true }" x-show="show" class="flex items-center justify-between p-4 mb-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 shadow-sm">
                 <div class="flex items-center gap-3">

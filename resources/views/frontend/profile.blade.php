@@ -67,7 +67,26 @@
             </div>
         </section>
 
-        <!-- 1. Visi & Misi Section -->
+        <!-- 1. Sejarah Kecamatan Section -->
+        <section id="sejarah" class="bg-white rounded-3xl p-8 sm:p-12 border border-slate-200 shadow-sm scroll-mt-24">
+            <div class="max-w-3xl mx-auto space-y-6">
+                <div class="text-center space-y-2">
+                    <span class="text-emerald-700 font-bold text-xs uppercase tracking-widest">Napak Tilas & Histori</span>
+                    <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">Sejarah Kecamatan Mlarak</h2>
+                    <div class="w-16 h-1 bg-emerald-600 rounded-full mx-auto mt-2"></div>
+                </div>
+                <div class="prose prose-slate max-w-none text-slate-600 leading-relaxed text-sm sm:text-base space-y-4">
+                    <p>
+                        {{ $siteSettings['sejarah'] ?? 'Kecamatan Mlarak memiliki sejarah panjang sebagai salah satu wilayah penyangga peradaban spiritual dan kebudayaan di Kabupaten Ponorogo. Memiliki lahan agraris subur beririgasi teknis dan tradisi gotong royong yang kuat, Mlarak dikenal secara luas melalui perpaduan nilai-nilai religius dan kekayaan seni budaya Ponorogo.' }}
+                    </p>
+                    <p>
+                        Keberadaan Pondok Modern Darussalam Gontor di Desa Gontor yang berdiri sejak tahun 1926 kian mengukuhkan posisi Mlarak di kancah nasional dan global sebagai kawah candradimuka pendidikan kepesantrenan terkemuka. Bersama 15 desa yang guyub rukun, masyarakat Mlarak terus melestarikan kearifan lokal seperti seni Reyog Ponorogo, tradisi bersih desa, dan semangat gotong royong sambatan yang senantiasa terjaga.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. Visi & Misi Section -->
         <section id="visimisi" class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch scroll-mt-24">
             <!-- Visi Card -->
             <div class="lg:col-span-5 bg-gradient-to-br from-emerald-800 to-teal-900 rounded-3xl p-8 text-white shadow-xl flex flex-col justify-between">
@@ -116,25 +135,6 @@
                             @endif
                         @endforeach
                     </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 2. Sejarah Kecamatan Section -->
-        <section id="sejarah" class="bg-white rounded-3xl p-8 sm:p-12 border border-slate-200 shadow-sm scroll-mt-24">
-            <div class="max-w-3xl mx-auto space-y-6">
-                <div class="text-center space-y-2">
-                    <span class="text-emerald-700 font-bold text-xs uppercase tracking-widest">Napak Tilas & Histori</span>
-                    <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">Sejarah Kecamatan Mlarak</h2>
-                    <div class="w-16 h-1 bg-emerald-600 rounded-full mx-auto mt-2"></div>
-                </div>
-                <div class="prose prose-slate max-w-none text-slate-600 leading-relaxed text-sm sm:text-base space-y-4">
-                    <p>
-                        {{ $siteSettings['sejarah'] ?? 'Kecamatan Mlarak memiliki sejarah panjang sebagai salah satu wilayah penyangga peradaban spiritual dan kebudayaan di Kabupaten Ponorogo. Memiliki lahan agraris subur beririgasi teknis dan tradisi gotong royong yang kuat, Mlarak dikenal secara luas melalui perpaduan nilai-nilai religius dan kekayaan seni budaya Ponorogo.' }}
-                    </p>
-                    <p>
-                        Keberadaan Pondok Modern Darussalam Gontor di Desa Gontor yang berdiri sejak tahun 1926 kian mengukuhkan posisi Mlarak di kancah nasional dan global sebagai kawah candradimuka pendidikan kepesantrenan terkemuka. Bersama 15 desa yang guyub rukun, masyarakat Mlarak terus melestarikan kearifan lokal seperti seni Reyog Ponorogo, tradisi bersih desa, dan semangat gotong royong sambatan yang senantiasa terjaga.
-                    </p>
                 </div>
             </div>
         </section>

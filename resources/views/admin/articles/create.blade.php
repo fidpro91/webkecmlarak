@@ -57,8 +57,9 @@
 
             <div>
                 <label for="konten" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Isi Konten Berita *</label>
-                <textarea name="konten" id="konten" rows="12" required placeholder="Tuliskan isi berita secara lengkap di sini. Tag paragraf HTML (<p>, <strong>, dll) didukung..."
+                <textarea name="konten" id="konten" rows="14" placeholder="Tuliskan isi berita secara lengkap di sini..."
                           class="w-full text-xs rounded-xl border-slate-200 focus:border-emerald-500 focus:ring-emerald-500 font-sans leading-relaxed">{{ old('konten') }}</textarea>
+                <p class="text-[11px] text-slate-400 mt-1">Gunakan toolbar editor di atas untuk mengatur format teks, judul sub-bab, daftar/poin, tabel, link, atau menyisipkan foto liputan.</p>
             </div>
 
             <div class="pt-4 border-t border-slate-100 flex items-center justify-end gap-3">
@@ -73,3 +74,5 @@
     </div>
 </div>
 @endsection
+
+@include('admin.articles._tinymce')

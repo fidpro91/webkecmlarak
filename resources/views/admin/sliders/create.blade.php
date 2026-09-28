@@ -48,11 +48,35 @@
                 </div>
             </div>
 
-            <div>
+            <div x-data="{ previewUrl: null }">
                 <label for="gambar" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Upload Gambar Slider *</label>
-                <input type="file" name="gambar" id="gambar" required accept="image/*"
+                
+                <template x-if="previewUrl">
+                    <div class="mb-3">
+                        <span class="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-600 mb-2">
+                            <i class="fa-solid fa-circle-check"></i> Pratinjau Gambar:
+                        </span>
+                        <img :src="previewUrl" alt="Pratinjau gambar" class="w-full max-w-lg h-44 object-cover rounded-xl shadow-md border-2 border-emerald-500">
+                    </div>
+                </template>
+
+                <input type="file" name="gambar" id="gambar" required accept="image/jpeg,image/png,image/webp,image/jpg"
+                       @change="
+                           const file = $event.target.files[0];
+                           if (file) {
+                               if (file.size > 10 * 1024 * 1024) {
+                                   alert('Ukuran file terlalu besar (' + (file.size / (1024 * 1024)).toFixed(2) + ' MB). Maksimal ukuran gambar slider adalah 10 MB.');
+                                   $event.target.value = '';
+                                   previewUrl = null;
+                                   return;
+                               }
+                               previewUrl = URL.createObjectURL(file);
+                           } else {
+                               previewUrl = null;
+                           }
+                       "
                        class="w-full text-xs text-slate-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100">
-                <p class="text-[11px] text-slate-400 mt-1">Format: JPG, PNG, WEBP. Rekomendasi resolusi landscape 1600x700px (Max 3MB).</p>
+                <p class="text-[11px] text-slate-400 mt-1">Format: JPG, JPEG, PNG, WEBP. Rekomendasi resolusi landscape 1600x700px (Maksimal 10 MB).</p>
             </div>
 
             <div class="pt-4 border-t border-slate-100 flex items-center justify-end gap-3">

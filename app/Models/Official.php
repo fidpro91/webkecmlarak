@@ -21,6 +21,17 @@ class Official extends Model
         'urutan' => 'integer',
     ];
 
+    protected static function booted(): void
+    {
+        static::saved(function () {
+            \App\Services\BaganSvgService::sync();
+        });
+
+        static::deleted(function () {
+            \App\Services\BaganSvgService::sync();
+        });
+    }
+
     public function getFotoUrlAttribute(): string
     {
         if (!$this->foto) {

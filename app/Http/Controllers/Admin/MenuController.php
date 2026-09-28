@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Menu;
 use App\Models\MenuPage;
+use App\Services\ImageService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -60,7 +61,7 @@ class MenuController extends Controller
         if ($validated['tipe'] === 'page') {
             $gambarPath = null;
             if ($request->hasFile('gambar_page')) {
-                $gambarPath = $request->file('gambar_page')->store('pages', 'public');
+                $gambarPath = ImageService::compressAndStore($request->file('gambar_page'), 'pages', 1400, 900);
             }
 
             MenuPage::create([
@@ -94,7 +95,7 @@ class MenuController extends Controller
             'status' => ['required', 'boolean'],
             'icon' => ['nullable', 'string', 'max:50'],
             'konten' => ['nullable', 'string'],
-            'gambar_page' => ['nullable', 'image', 'max:3072'],
+            'gambar_page' => ['nullable', 'image', 'max:10240'],
         ]);
 
         $validated['slug'] = Str::slug($validated['nama_menu']);
@@ -117,7 +118,7 @@ class MenuController extends Controller
                 if ($menuPage->gambar && !str_starts_with($menuPage->gambar, 'http') && Storage::disk('public')->exists($menuPage->gambar)) {
                     Storage::disk('public')->delete($menuPage->gambar);
                 }
-                $menuPage->gambar = $request->file('gambar_page')->store('pages', 'public');
+                $menuPage->gambar = ImageService::compressAndStore($request->file('gambar_page'), 'pages', 1400, 900);
             }
 
             $menuPage->konten = $request->input('konten');

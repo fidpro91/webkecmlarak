@@ -43,9 +43,7 @@
         <div class="absolute inset-0 overflow-hidden pointer-events-none z-0">
             <div class="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-[#7a1220]/30 blur-3xl"></div>
             <div class="absolute bottom-0 left-1/3 w-64 h-64 rounded-full bg-amber-900/10 blur-2xl"></div>
-        </div>
-
-        <div class="relative min-h-[580px] sm:min-h-[640px] lg:min-h-[680px] flex flex-col lg:flex-row">
+        </div>        <div class="relative min-h-[580px] sm:min-h-[640px] lg:min-h-[680px] flex items-center">
 
             @if($sliders->count() > 0)
                 @foreach($sliders as $index => $slider)
@@ -63,81 +61,82 @@
                         <img src="{{ $slider->gambar_url }}"
                              alt="{{ $slider->judul }}"
                              class="absolute inset-0 w-full h-full object-cover object-center">
-                        <!-- Gradient: strong maroon on left, transparent on right -->
-                        <div class="absolute inset-0 bg-gradient-to-r from-[#3d0710] via-[#5c0c16]/85 to-[#5c0c16]/20 lg:via-[#3d0710]/90 lg:to-transparent"></div>
-                        <div class="absolute inset-0 bg-gradient-to-t from-[#3d0710]/60 via-transparent to-transparent"></div>
+                        <!-- Gradasi horizontal: Dari KIRI ke KANAN (~40% maroon di kiri, 60% gambar terang di kanan) -->
+                        <div class="absolute inset-0 bg-gradient-to-r from-[#3d0710] via-[#5c0c16]/85 to-transparent lg:hidden"></div>
+                        <div class="hidden lg:block absolute inset-0"
+                             style="background: linear-gradient(to right, #3d0710 0%, #3d0710 28%, rgba(61, 7, 16, 0.95) 36%, rgba(61, 7, 16, 0.55) 42%, transparent 48%);"></div>
                     </div>
 
                 @endforeach
 
-                <!-- Text Content Panel — overlaid on all slides -->
-                <div class="relative z-10 flex flex-col justify-center w-full lg:w-[55%] xl:w-1/2 min-h-[580px] sm:min-h-[640px] lg:min-h-[680px] px-6 sm:px-10 lg:px-16 xl:px-20 py-16 lg:py-0">
+                <!-- Text Content Panel — Sejajar dengan Logo Header (max-w-7xl mx-auto px-4 sm:px-6 lg:px-8) -->
+                <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full min-h-[580px] sm:min-h-[640px] lg:min-h-[680px] flex items-center">
+                    <div class="relative w-full lg:w-[48%] xl:w-[44%] min-h-[580px] sm:min-h-[640px] lg:min-h-[680px]">
 
-                    @foreach($sliders as $index => $slider)
-                        <div x-show="activeSlide === {{ $index }}"
-                             class="absolute inset-0 flex flex-col justify-center px-6 sm:px-10 lg:px-16 xl:px-20 py-16 lg:py-0">
+                        @foreach($sliders as $index => $slider)
+                            <div x-show="activeSlide === {{ $index }}"
+                                 class="absolute inset-0 flex flex-col justify-center py-16 lg:py-0">
 
-                            <!-- Badge -->
-                            <div x-show="animIn"
-                                 x-transition:enter="transition ease-out duration-500 delay-100"
-                                 x-transition:enter-start="opacity-0 -translate-y-3"
-                                 x-transition:enter-end="opacity-100 translate-y-0"
-                                 class="inline-flex items-center gap-2 self-start px-4 py-1.5 mb-5 rounded-full border border-amber-400/40 bg-amber-400/10 backdrop-blur-sm text-amber-300 text-[11px] font-bold uppercase tracking-widest shadow-sm">
-                                <span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
-                                <i class="fa-solid fa-landmark"></i> Portal Resmi Kecamatan Mlarak
+                                <!-- Badge -->
+                                <div x-show="animIn"
+                                     x-transition:enter="transition ease-out duration-500 delay-100"
+                                     x-transition:enter-start="opacity-0 -translate-y-3"
+                                     x-transition:enter-end="opacity-100 translate-y-0"
+                                     class="inline-flex items-center gap-1.5 self-start px-3.5 py-1 mb-4 rounded-full border border-amber-400/40 bg-amber-400/10 backdrop-blur-sm text-amber-300 text-[11px] font-bold uppercase tracking-widest shadow-sm">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
+                                    <i class="fa-solid fa-landmark"></i> Portal Resmi Kecamatan Mlarak
+                                </div>
+
+                                <!-- Heading -->
+                                <h1 x-show="animIn"
+                                    x-transition:enter="transition ease-out duration-600 delay-200"
+                                    x-transition:enter-start="opacity-0 translate-y-6"
+                                    x-transition:enter-end="opacity-100 translate-y-0"
+                                    class="text-2xl sm:text-3xl lg:text-3xl xl:text-4xl font-extrabold tracking-tight leading-tight text-white mb-3.5 max-w-lg drop-shadow">
+                                    {{ $slider->judul }}
+                                </h1>
+
+                                <!-- Animated divider line -->
+                                <div x-show="animIn"
+                                     x-transition:enter="transition ease-out duration-700 delay-300"
+                                     x-transition:enter-start="opacity-0 scale-x-0"
+                                     x-transition:enter-end="opacity-100 scale-x-100"
+                                     class="w-14 h-1 rounded-full bg-gradient-to-r from-amber-400 to-rose-400 mb-4 origin-left"></div>
+
+                                <!-- Description -->
+                                @if($slider->deskripsi)
+                                <p x-show="animIn"
+                                   x-transition:enter="transition ease-out duration-600 delay-350"
+                                   x-transition:enter-start="opacity-0 translate-y-4"
+                                   x-transition:enter-end="opacity-100 translate-y-0"
+                                   class="text-xs sm:text-sm text-rose-100/90 leading-relaxed mb-6 max-w-md line-clamp-3">
+                                    {{ $slider->deskripsi }}
+                                </p>
+                                @else
+                                <div class="mb-6"></div>
+                                @endif
+
+                                <!-- CTA Buttons -->
+                                <div x-show="animIn"
+                                     x-transition:enter="transition ease-out duration-600 delay-[450ms]"
+                                     x-transition:enter-start="opacity-0 translate-y-4"
+                                     x-transition:enter-end="opacity-100 translate-y-0"
+                                     class="flex flex-wrap gap-2.5">
+                                    <a href="{{ route('services.index') }}"
+                                       class="group relative inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-white font-bold text-xs sm:text-sm shadow-lg shadow-amber-900/40 transition-all duration-200 transform hover:-translate-y-1 hover:shadow-xl overflow-hidden">
+                                        <span class="absolute inset-0 bg-gradient-to-r from-amber-400/0 to-white/10 opacity-0 group-hover:opacity-100 transition-opacity"></span>
+                                        <i class="fa-solid fa-handshake-angle"></i>
+                                        <span>Layanan PATEN</span>
+                                    </a>
+                                    <a href="{{ route('profile') }}"
+                                       class="group inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-xs sm:text-sm border border-white/25 hover:border-white/50 backdrop-blur-sm transition-all duration-200 transform hover:-translate-y-1">
+                                        <i class="fa-solid fa-circle-info"></i>
+                                        <span>Profil Wilayah</span>
+                                    </a>
+                                </div>
                             </div>
-
-
-
-                            <!-- Heading -->
-                            <h1 x-show="animIn"
-                                x-transition:enter="transition ease-out duration-600 delay-200"
-                                x-transition:enter-start="opacity-0 translate-y-6"
-                                x-transition:enter-end="opacity-100 translate-y-0"
-                                class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight leading-tight text-white mb-4 max-w-lg drop-shadow">
-                                {{ $slider->judul }}
-                            </h1>
-
-                            <!-- Animated divider line -->
-                            <div x-show="animIn"
-                                 x-transition:enter="transition ease-out duration-700 delay-300"
-                                 x-transition:enter-start="opacity-0 scale-x-0"
-                                 x-transition:enter-end="opacity-100 scale-x-100"
-                                 class="w-16 h-1 rounded-full bg-gradient-to-r from-amber-400 to-rose-400 mb-5 origin-left"></div>
-
-                            <!-- Description -->
-                            @if($slider->deskripsi)
-                            <p x-show="animIn"
-                               x-transition:enter="transition ease-out duration-600 delay-350"
-                               x-transition:enter-start="opacity-0 translate-y-4"
-                               x-transition:enter-end="opacity-100 translate-y-0"
-                               class="text-sm sm:text-base text-rose-100/85 leading-relaxed mb-8 max-w-md line-clamp-3">
-                                {{ $slider->deskripsi }}
-                            </p>
-                            @else
-                            <div class="mb-8"></div>
-                            @endif
-
-                            <!-- CTA Buttons -->
-                            <div x-show="animIn"
-                                 x-transition:enter="transition ease-out duration-600 delay-[450ms]"
-                                 x-transition:enter-start="opacity-0 translate-y-4"
-                                 x-transition:enter-end="opacity-100 translate-y-0"
-                                 class="flex flex-wrap gap-3">
-                                <a href="{{ route('services.index') }}"
-                                   class="group relative inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-white font-bold text-sm shadow-lg shadow-amber-900/40 transition-all duration-200 transform hover:-translate-y-1 hover:shadow-xl overflow-hidden">
-                                    <span class="absolute inset-0 bg-gradient-to-r from-amber-400/0 to-white/10 opacity-0 group-hover:opacity-100 transition-opacity"></span>
-                                    <i class="fa-solid fa-handshake-angle"></i>
-                                    Layanan PATEN
-                                </a>
-                                <a href="{{ route('profile') }}"
-                                   class="group inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-sm border border-white/25 hover:border-white/50 backdrop-blur-sm transition-all duration-200 transform hover:-translate-y-1">
-                                    <i class="fa-solid fa-circle-info"></i>
-                                    Profil Wilayah
-                                </a>
-                            </div>
-                        </div>
-                    @endforeach
+                        @endforeach
+                    </div>
                 </div>
 
             @else
@@ -155,43 +154,45 @@
 
         </div><!-- end flex row -->
 
-        <!-- Bottom Controls Bar -->
-        <div class="absolute bottom-0 left-0 right-0 z-20 flex items-center justify-between px-6 sm:px-10 lg:px-16 py-4 bg-gradient-to-t from-[#3d0710]/80 to-transparent">
+        <!-- Bottom Controls Bar — Sejajar dengan Logo Header -->
+        <div class="absolute bottom-0 left-0 right-0 z-20 pointer-events-none pb-4 sm:pb-5">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between pointer-events-auto">
 
-            <!-- Slide Tabs -->
-            <div class="flex items-center gap-2">
-                @foreach($sliders as $index => $slider)
-                    <button @click="goTo({{ $index }})"
-                            :class="activeSlide === {{ $index }}
-                                ? 'bg-amber-400 w-10 shadow-md shadow-amber-400/30'
-                                : 'bg-white/25 hover:bg-white/50 w-3'"
-                            class="h-3 rounded-full transition-all duration-400"
-                            aria-label="Slide {{ $index + 1 }}">
-                    </button>
-                @endforeach
-            </div>
-
-            <!-- Progress Bar -->
-            <div class="hidden sm:flex items-center gap-3">
-                <div class="w-28 h-0.5 bg-white/20 rounded-full overflow-hidden">
-                    <div :style="'width:' + progress + '%'"
-                         class="h-full bg-amber-400 rounded-full transition-all duration-100 ease-linear"></div>
+                <!-- Slide Tabs -->
+                <div class="flex items-center gap-2">
+                    @foreach($sliders as $index => $slider)
+                        <button @click="goTo({{ $index }})"
+                                :class="activeSlide === {{ $index }}
+                                    ? 'bg-amber-400 w-10 shadow-md shadow-amber-400/30'
+                                    : 'bg-white/25 hover:bg-white/50 w-3'"
+                                class="h-3 rounded-full transition-all duration-400"
+                                aria-label="Slide {{ $index + 1 }}">
+                        </button>
+                    @endforeach
                 </div>
-                <span class="text-white/40 text-[10px] font-mono tracking-widest" x-text="String(activeSlide + 1).padStart(2, '0') + ' / ' + String(slidesCount).padStart(2, '0')"></span>
-            </div>
 
-            <!-- Arrow Navigation -->
-            <div class="flex items-center gap-2">
-                <button @click="prev()"
-                        class="w-10 h-10 rounded-full border border-white/20 bg-white/10 hover:bg-[#851624] text-white backdrop-blur-sm flex items-center justify-center transition-all duration-200 hover:scale-110 hover:border-transparent"
-                        aria-label="Previous">
-                    <i class="fa-solid fa-chevron-left text-sm"></i>
-                </button>
-                <button @click="next()"
-                        class="w-10 h-10 rounded-full border border-white/20 bg-white/10 hover:bg-[#851624] text-white backdrop-blur-sm flex items-center justify-center transition-all duration-200 hover:scale-110 hover:border-transparent"
-                        aria-label="Next">
-                    <i class="fa-solid fa-chevron-right text-sm"></i>
-                </button>
+                <!-- Progress Bar -->
+                <div class="hidden sm:flex items-center gap-3">
+                    <div class="w-28 h-0.5 bg-white/20 rounded-full overflow-hidden">
+                        <div :style="'width:' + progress + '%'"
+                             class="h-full bg-amber-400 rounded-full transition-all duration-100 ease-linear"></div>
+                    </div>
+                    <span class="text-white/40 text-[10px] font-mono tracking-widest" x-text="String(activeSlide + 1).padStart(2, '0') + ' / ' + String(slidesCount).padStart(2, '0')"></span>
+                </div>
+
+                <!-- Arrow Navigation -->
+                <div class="flex items-center gap-2">
+                    <button @click="prev()"
+                            class="w-10 h-10 rounded-full border border-white/20 bg-white/10 hover:bg-[#851624] text-white backdrop-blur-sm flex items-center justify-center transition-all duration-200 hover:scale-110 hover:border-transparent"
+                            aria-label="Previous">
+                        <i class="fa-solid fa-chevron-left text-sm"></i>
+                    </button>
+                    <button @click="next()"
+                            class="w-10 h-10 rounded-full border border-white/20 bg-white/10 hover:bg-[#851624] text-white backdrop-blur-sm flex items-center justify-center transition-all duration-200 hover:scale-110 hover:border-transparent"
+                            aria-label="Next">
+                        <i class="fa-solid fa-chevron-right text-sm"></i>
+                    </button>
+                </div>
             </div>
         </div>
 

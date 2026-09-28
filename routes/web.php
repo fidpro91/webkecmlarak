@@ -79,6 +79,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
     // News Categories & Articles
     Route::resource('categories', AdminCategoryController::class)->except(['show']);
+    Route::post('articles/upload-image', [AdminArticleController::class, 'uploadImage'])->name('articles.upload-image');
     Route::resource('articles', AdminArticleController::class)->except(['show']);
 
     // Villages
@@ -93,6 +94,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     // Officials & Bagan Struktur Organisasi
     Route::post('/officials/bagan', [AdminOfficialController::class, 'updateBagan'])->name('officials.update-bagan');
     Route::delete('/officials/bagan', [AdminOfficialController::class, 'deleteBagan'])->name('officials.delete-bagan');
+    Route::post('/officials/bagan/sync', [AdminOfficialController::class, 'syncBagan'])->name('officials.sync-bagan');
+    Route::get('/officials/bagan/template', [AdminOfficialController::class, 'downloadTemplate'])->name('officials.download-template');
     Route::resource('officials', AdminOfficialController::class)->except(['show']);
 
     // Downloads

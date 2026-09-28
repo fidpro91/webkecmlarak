@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Slider;
+use App\Services\ImageService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -29,11 +30,17 @@ class SliderController extends Controller
             'deskripsi' => ['nullable', 'string', 'max:500'],
             'urutan' => ['required', 'integer', 'min:0'],
             'status' => ['required', 'boolean'],
-            'gambar' => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:3072'],
+            'gambar' => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:10240'],
+        ], [
+            'gambar.required' => 'Gambar slider wajib diunggah.',
+            'gambar.image' => 'File yang diunggah harus berupa file gambar yang valid.',
+            'gambar.mimes' => 'Format gambar harus bertipe JPG, JPEG, PNG, atau WEBP.',
+            'gambar.max' => 'Ukuran gambar slider tidak boleh melebihi 10 MB.',
+            'gambar.uploaded' => 'Gagal mengunggah gambar. Pastikan file tidak melebihi 10 MB dan format gambar valid.',
         ]);
 
         if ($request->hasFile('gambar')) {
-            $path = $request->file('gambar')->store('sliders', 'public');
+            $path = ImageService::compressAndStore($request->file('gambar'), 'sliders', 1920, 1080);
             $validated['gambar'] = $path;
         }
 
@@ -54,7 +61,12 @@ class SliderController extends Controller
             'deskripsi' => ['nullable', 'string', 'max:500'],
             'urutan' => ['required', 'integer', 'min:0'],
             'status' => ['required', 'boolean'],
-            'gambar' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:3072'],
+            'gambar' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:10240'],
+        ], [
+            'gambar.image' => 'File yang diunggah harus berupa file gambar yang valid.',
+            'gambar.mimes' => 'Format gambar harus bertipe JPG, JPEG, PNG, atau WEBP.',
+            'gambar.max' => 'Ukuran gambar slider tidak boleh melebihi 10 MB.',
+            'gambar.uploaded' => 'Gagal mengunggah gambar. Pastikan file tidak melebihi 10 MB dan format gambar valid.',
         ]);
 
         if ($request->hasFile('gambar')) {
@@ -62,7 +74,7 @@ class SliderController extends Controller
             if ($slider->gambar && !str_starts_with($slider->gambar, 'http') && Storage::disk('public')->exists($slider->gambar)) {
                 Storage::disk('public')->delete($slider->gambar);
             }
-            $validated['gambar'] = $request->file('gambar')->store('sliders', 'public');
+            $validated['gambar'] = ImageService::compressAndStore($request->file('gambar'), 'sliders', 1920, 1080);
         }
 
         $slider->update($validated);

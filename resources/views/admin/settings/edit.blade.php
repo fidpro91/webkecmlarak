@@ -242,11 +242,11 @@
 
                     <div class="md:col-span-2 space-y-4">
                         <div>
-                            <label for="bagan_struktur_organisasi_upload" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Ganti Gambar Bagan Struktur</label>
-                            <input type="file" name="bagan_struktur_organisasi_upload" id="bagan_struktur_organisasi_upload" accept="image/png,image/jpeg,image/webp,image/svg+xml"
+                            <label for="bagan_struktur_organisasi_upload" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Ganti Desain Bagan Struktur (Format SVG)</label>
+                            <input type="file" name="bagan_struktur_organisasi_upload" id="bagan_struktur_organisasi_upload" accept=".svg,image/svg+xml"
                                    class="w-full text-xs text-slate-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100">
                             <p class="mt-1.5 text-[11px] text-slate-500">
-                                Format didukung: PNG, JPG, JPEG, WEBP, SVG. Maksimal 10 MB. Dianjurkan gambar beresolusi tinggi (landscape) agar seluruh teks bagan terbaca tajam.
+                                Format wajib: <strong>Vektor SVG (.svg)</strong> &bull; Maksimal 5 MB. Sistem akan secara otomatis memetakan nama pejabat ke dalam elemen SVG Anda.
                             </p>
                         </div>
 

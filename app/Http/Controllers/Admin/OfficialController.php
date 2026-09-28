@@ -5,10 +5,13 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Official;
 use App\Models\Setting;
+use App\Services\BaganSvgService;
+use App\Services\ImageService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class OfficialController extends Controller
 {
@@ -24,37 +27,49 @@ class OfficialController extends Controller
     public function updateBagan(Request $request): RedirectResponse
     {
         $request->validate([
-            'bagan_struktur' => ['required', 'image', 'mimes:png,jpg,jpeg,webp,svg', 'max:10240'],
+            'bagan_struktur' => ['required', 'file', 'mimes:svg', 'max:5120'],
         ], [
-            'bagan_struktur.required' => 'Silakan pilih berkas gambar bagan struktur organisasi.',
-            'bagan_struktur.image' => 'Berkas yang diunggah harus berupa file gambar.',
-            'bagan_struktur.mimes' => 'Format gambar harus berupa PNG, JPG, JPEG, WEBP, atau SVG.',
-            'bagan_struktur.max' => 'Ukuran berkas gambar maksimal adalah 10 MB.',
+            'bagan_struktur.required' => 'Silakan pilih berkas SVG bagan struktur organisasi.',
+            'bagan_struktur.file' => 'Berkas yang diunggah tidak valid.',
+            'bagan_struktur.mimes' => 'Berkas harus berupa gambar vektor berformat SVG (.svg). Format bitmap (PNG/JPG) tidak didukung agar sistem dapat memetakan posisi jabatan secara otomatis.',
+            'bagan_struktur.max' => 'Ukuran berkas SVG maksimal adalah 5 MB.',
         ]);
 
-        $currentBagan = Setting::get('bagan_struktur_organisasi');
-        if ($currentBagan && str_starts_with($currentBagan, '/storage/settings/') && Storage::disk('public')->exists(str_replace('/storage/', '', $currentBagan))) {
-            Storage::disk('public')->delete(str_replace('/storage/', '', $currentBagan));
+        $result = BaganSvgService::processUploadedSvg($request->file('bagan_struktur'));
+
+        if (!$result['success']) {
+            return back()->withErrors(['bagan_struktur' => $result['message']]);
         }
 
-        $path = $request->file('bagan_struktur')->store('settings', 'public');
-        Setting::set('bagan_struktur_organisasi', Storage::url($path));
-        Setting::clearCache();
-
-        return back()->with('success', 'Gambar bagan struktur organisasi berhasil diperbarui.');
+        return back()->with('success', $result['message']);
     }
 
     public function deleteBagan(): RedirectResponse
     {
-        $currentBagan = Setting::get('bagan_struktur_organisasi');
-        if ($currentBagan && str_starts_with($currentBagan, '/storage/settings/') && Storage::disk('public')->exists(str_replace('/storage/', '', $currentBagan))) {
-            Storage::disk('public')->delete(str_replace('/storage/', '', $currentBagan));
+        BaganSvgService::resetToStandard();
+
+        return back()->with('success', 'Bagan struktur organisasi berhasil direset ke bagan standar resmi dan telah disinkronkan.');
+    }
+
+    public function syncBagan(): RedirectResponse
+    {
+        $success = BaganSvgService::sync();
+
+        if ($success) {
+            return back()->with('success', 'Bagan struktur organisasi berhasil disinkronkan dan diregenerasi dengan data jajaran pejabat terkini.');
         }
 
-        Setting::set('bagan_struktur_organisasi', null);
-        Setting::clearCache();
+        return back()->with('error', 'Gagal meregenerasi bagan SVG. Silakan periksa log sistem.');
+    }
 
-        return back()->with('success', 'Bagan struktur organisasi berhasil direset ke bagan standar sistem.');
+    public function downloadTemplate(): BinaryFileResponse
+    {
+        BaganSvgService::sync(true);
+        $path = BaganSvgService::getPublicSvgPath();
+
+        return response()->download($path, 'template-bagan-struktur-organisasi-kecamatan.svg', [
+            'Content-Type' => 'image/svg+xml',
+        ]);
     }
 
     public function create(): View
@@ -68,16 +83,19 @@ class OfficialController extends Controller
             'nama' => ['required', 'string', 'max:150'],
             'jabatan' => ['required', 'string', 'max:150'],
             'urutan' => ['required', 'integer', 'min:0'],
-            'foto' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:3072'],
+            'foto' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:10240'],
         ]);
 
         if ($request->hasFile('foto')) {
-            $validated['foto'] = $request->file('foto')->store('officials', 'public');
+            $validated['foto'] = ImageService::compressAndStore($request->file('foto'), 'officials', 800, 800);
         }
 
-        Official::create($validated);
+        $official = Official::create($validated);
 
-        return redirect()->route('admin.officials.index')->with('success', 'Data pejabat/pegawai berhasil ditambahkan.');
+        // Otomatis sinkronkan bagan SVG dan nama camat
+        BaganSvgService::sync();
+
+        return redirect()->route('admin.officials.index')->with('success', 'Data pejabat/pegawai berhasil ditambahkan dan bagan struktur organisasi otomatis diperbarui.');
     }
 
     public function edit(Official $official): View
@@ -91,19 +109,22 @@ class OfficialController extends Controller
             'nama' => ['required', 'string', 'max:150'],
             'jabatan' => ['required', 'string', 'max:150'],
             'urutan' => ['required', 'integer', 'min:0'],
-            'foto' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:3072'],
+            'foto' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:10240'],
         ]);
 
         if ($request->hasFile('foto')) {
             if ($official->foto && !str_starts_with($official->foto, 'http') && Storage::disk('public')->exists($official->foto)) {
                 Storage::disk('public')->delete($official->foto);
             }
-            $validated['foto'] = $request->file('foto')->store('officials', 'public');
+            $validated['foto'] = ImageService::compressAndStore($request->file('foto'), 'officials', 800, 800);
         }
 
         $official->update($validated);
 
-        return redirect()->route('admin.officials.index')->with('success', 'Data pejabat/pegawai berhasil diperbarui.');
+        // Otomatis sinkronkan bagan SVG dan nama camat
+        BaganSvgService::sync();
+
+        return redirect()->route('admin.officials.index')->with('success', 'Data pejabat/pegawai berhasil diperbarui dan bagan struktur organisasi otomatis disinkronkan.');
     }
 
     public function destroy(Official $official): RedirectResponse
@@ -114,6 +135,9 @@ class OfficialController extends Controller
 
         $official->delete();
 
-        return redirect()->route('admin.officials.index')->with('success', 'Data pejabat/pegawai berhasil dihapus.');
+        // Otomatis regenerasi bagan SVG
+        BaganSvgService::sync();
+
+        return redirect()->route('admin.officials.index')->with('success', 'Data pejabat/pegawai berhasil dihapus dan bagan struktur organisasi otomatis disinkronkan.');
     }
 }
