@@ -55,6 +55,8 @@
                 <p class="text-[11px] text-slate-400 mt-1">Rekomendasi rasio 16:9 (Landscape), resolusi minimal 800x450px.</p>
             </div>
 
+            @include('admin.articles._ai_modal')
+
             <div>
                 <label for="konten" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Isi Konten Berita *</label>
                 <textarea name="konten" id="konten" rows="14" placeholder="Tuliskan isi berita secara lengkap di sini..."

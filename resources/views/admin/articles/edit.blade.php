@@ -59,6 +59,8 @@
                        class="w-full text-xs text-slate-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100">
             </div>
 
+            @include('admin.articles._ai_modal')
+
             <div>
                 <label for="konten" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Isi Konten Berita *</label>
                 <textarea name="konten" id="konten" rows="14"

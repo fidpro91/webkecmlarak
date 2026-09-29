@@ -291,6 +291,7 @@
         </footer>
     </div>
 
+    @stack('modals')
     @stack('scripts')
 </body>
 </html>

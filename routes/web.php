@@ -79,6 +79,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
     // News Categories & Articles
     Route::resource('categories', AdminCategoryController::class)->except(['show']);
+    Route::post('articles/generate-ai', [AdminArticleController::class, 'generateAi'])->name('articles.generate-ai');
     Route::post('articles/upload-image', [AdminArticleController::class, 'uploadImage'])->name('articles.upload-image');
     Route::resource('articles', AdminArticleController::class)->except(['show']);
 

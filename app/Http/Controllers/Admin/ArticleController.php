@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Article;
 use App\Models\Category;
+use App\Services\GeminiAiService;
 use App\Services\ImageService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -122,6 +123,47 @@ class ArticleController extends Controller
 
         return response()->json([
             'location' => $url,
+        ]);
+    }
+
+    public function generateAi(Request $request): \Illuminate\Http\JsonResponse
+    {
+        if (function_exists('set_time_limit')) {
+            @set_time_limit(120);
+        }
+
+        $validated = $request->validate([
+            'prompt' => ['required', 'string', 'min:5', 'max:2500'],
+            'judul' => ['nullable', 'string', 'max:255'],
+            'category_id' => ['nullable', 'exists:categories,id'],
+        ], [
+            'prompt.required' => 'Silakan tuliskan instruksi atau poin-poin berita untuk AI.',
+            'prompt.min' => 'Instruksi minimal 5 karakter agar AI dapat memahami topik dengan baik.',
+        ]);
+
+        $kategoriNama = null;
+        if (!empty($validated['category_id'])) {
+            $cat = Category::find($validated['category_id']);
+            $kategoriNama = $cat?->nama;
+        }
+
+        $result = GeminiAiService::generateArticle(
+            prompt: $validated['prompt'],
+            judul: $validated['judul'] ?? null,
+            kategori: $kategoriNama
+        );
+
+        if (!$result['success']) {
+            return response()->json([
+                'success' => false,
+                'message' => $result['message'],
+            ], 422);
+        }
+
+        return response()->json([
+            'success' => true,
+            'content' => $result['content'],
+            'message' => 'Naskah artikel berhasil dibuat oleh AI Agent!',
         ]);
     }
 }
