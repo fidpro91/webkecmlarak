@@ -45,6 +45,7 @@ class BaganSvgService
         $camatOfficial = self::findOfficialByKeywords($officials, ['camat', 'kepala kecamatan']);
         $camatNama = $camatOfficial?->nama ?: ($namaCamatSetting ?: 'Drs. H. Bambang Sujarwo, M.Si');
         $camatKet = 'Pembina Tingkat I (IV/b)';
+        $camatFoto = $camatOfficial && !empty($camatOfficial->foto) ? $camatOfficial->foto_url : Setting::get('foto_camat');
 
         // 2. Sekcam
         $sekcamOfficial = self::findOfficialByKeywords($officials, ['sekretaris', 'sekcam']);
@@ -98,6 +99,7 @@ class BaganSvgService
             'judul_bagan' => 'BAGAN STRUKTUR ORGANISASI ' . strtoupper($instansiNama),
             'camat_nama' => $camatNama,
             'camat_keterangan' => $camatKet,
+            'camat_foto' => $camatFoto,
             'sekcam_nama' => $sekcamNama,
             'sekcam_keterangan' => $sekcamKet,
             'kasi_tapem_nama' => $tapemNama,
@@ -142,10 +144,14 @@ class BaganSvgService
 
             File::put($targetPath, $renderedSvg);
 
-            // Sinkronkan juga nama camat ke settings agar selalu konsisten
+            // Sinkronkan juga nama camat dan foto camat ke settings agar selalu konsisten
             if (!empty($data['camat_nama'])) {
                 Setting::set('nama_camat', $data['camat_nama']);
             }
+            if (!empty($data['camat_foto'])) {
+                Setting::set('foto_camat', $data['camat_foto']);
+            }
+            Setting::clearCache();
 
             return true;
         } catch (\Throwable $e) {
@@ -333,8 +339,18 @@ class BaganSvgService
         foreach ($officials as $official) {
             $jabatan = strtolower($official->jabatan);
             foreach ($keywords as $keyword) {
-                if (str_contains($jabatan, strtolower($keyword))) {
-                    return $official;
+                $kw = strtolower($keyword);
+                if ($kw === 'camat') {
+                    if (str_contains($jabatan, 'sekretaris') || str_contains($jabatan, 'sekcam') || str_contains($jabatan, 'kasi') || str_contains($jabatan, 'subbag')) {
+                        continue;
+                    }
+                    if (preg_match('/\bcamat\b/i', $jabatan)) {
+                        return $official;
+                    }
+                } else {
+                    if (str_contains($jabatan, $kw)) {
+                        return $official;
+                    }
                 }
             }
         }

@@ -32,6 +32,21 @@ class Official extends Model
         });
     }
 
+    public static function getCamat(): ?self
+    {
+        $officials = self::orderBy('urutan', 'asc')->get();
+        foreach ($officials as $official) {
+            $jabatan = strtolower($official->jabatan);
+            if (str_contains($jabatan, 'sekretaris') || str_contains($jabatan, 'sekcam') || str_contains($jabatan, 'kasi') || str_contains($jabatan, 'kasubbag')) {
+                continue;
+            }
+            if (preg_match('/\bcamat\b/i', $jabatan) || str_contains($jabatan, 'kepala kecamatan')) {
+                return $official;
+            }
+        }
+        return null;
+    }
+
     public function getFotoUrlAttribute(): string
     {
         if (!$this->foto) {

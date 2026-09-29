@@ -2,9 +2,79 @@
 
 @section('title', 'Beranda')
 
+@push('styles')
+<style>
+    .slider-bottom-controls {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 50px;
+        z-index: 30;
+    }
+    @media (min-width: 640px) {
+        .slider-bottom-controls {
+            bottom: 58px;
+        }
+    }
+    @media (min-width: 1024px) {
+        .slider-bottom-controls {
+            bottom: 64px;
+        }
+        .slider-photo-mask {
+            -webkit-mask-image: linear-gradient(to right, transparent 0%, transparent 24%, rgba(0, 0, 0, 0.4) 32%, rgba(0, 0, 0, 0.9) 40%, black 46%);
+            mask-image: linear-gradient(to right, transparent 0%, transparent 24%, rgba(0, 0, 0, 0.4) 32%, rgba(0, 0, 0, 0.9) 40%, black 46%);
+        }
+        /* Tombol next/prev hanya muncul saat hover kursor mouse di area slider */
+        .slider-arrow-nav {
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(6px) scale(0.95);
+            pointer-events: none;
+            transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.3s;
+        }
+        .hero-slider-section:hover .slider-arrow-nav {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0) scale(1);
+            pointer-events: auto;
+        }
+    }
+
+    /* Animasi Ticker Bergerak dari Kanan ke Kiri untuk Statistics Counter Strip */
+    @keyframes statsTickerScroll {
+        0% {
+            transform: translate3d(0, 0, 0);
+        }
+        100% {
+            transform: translate3d(-50%, 0, 0);
+        }
+    }
+    .stats-ticker-track {
+        display: flex;
+        width: max-content;
+        animation: statsTickerScroll 28s linear infinite;
+        will-change: transform;
+    }
+    .stats-ticker-track:hover,
+    .stats-ticker-track.stats-paused {
+        animation-play-state: paused;
+    }
+    @media (max-width: 640px) {
+        .stats-ticker-track {
+            animation-duration: 22s;
+        }
+    }
+    @media (prefers-reduced-motion: reduce) {
+        .stats-ticker-track {
+            animation: none;
+        }
+    }
+</style>
+@endpush
+
 @section('content')
     <!-- 1. Hero Slider — Premium Split Layout -->
-    <section class="relative overflow-hidden bg-[#3d0710]"
+    <section class="relative overflow-hidden bg-[#3d0710] hero-slider-section group"
              x-data="{
                 activeSlide: 0,
                 slidesCount: {{ $sliders->count() > 0 ? $sliders->count() : 1 }},
@@ -57,14 +127,12 @@
                          x-transition:leave-start="opacity-100"
                          x-transition:leave-end="opacity-0"
                          class="absolute inset-0 w-full h-full z-0">
-                        <!-- Image covers right half on lg, full on mobile with dark overlay -->
+                        <!-- Foto slider dengan transparansi mask 30% dari kiri ke kanan menembus ke background merah maroon -->
                         <img src="{{ $slider->gambar_url }}"
                              alt="{{ $slider->judul }}"
-                             class="absolute inset-0 w-full h-full object-cover object-center">
-                        <!-- Gradasi horizontal: Dari KIRI ke KANAN (~40% maroon di kiri, 60% gambar terang di kanan) -->
+                             class="absolute inset-0 w-full h-full object-cover object-center slider-photo-mask">
+                        <!-- Overlay untuk mobile agar teks tetap terbaca tajam -->
                         <div class="absolute inset-0 bg-gradient-to-r from-[#3d0710] via-[#5c0c16]/85 to-transparent lg:hidden"></div>
-                        <div class="hidden lg:block absolute inset-0"
-                             style="background: linear-gradient(to right, #3d0710 0%, #3d0710 28%, rgba(61, 7, 16, 0.95) 36%, rgba(61, 7, 16, 0.55) 42%, transparent 48%);"></div>
                     </div>
 
                 @endforeach
@@ -154,8 +222,8 @@
 
         </div><!-- end flex row -->
 
-        <!-- Bottom Controls Bar — Sejajar dengan Logo Header -->
-        <div class="absolute bottom-0 left-0 right-0 z-20 pointer-events-none pb-4 sm:pb-5">
+        <!-- Bottom Controls Bar — Diposisikan di atas strip statistik counter -->
+        <div class="slider-bottom-controls pointer-events-none">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between pointer-events-auto">
 
                 <!-- Slide Tabs -->
@@ -180,15 +248,15 @@
                     <span class="text-white/40 text-[10px] font-mono tracking-widest" x-text="String(activeSlide + 1).padStart(2, '0') + ' / ' + String(slidesCount).padStart(2, '0')"></span>
                 </div>
 
-                <!-- Arrow Navigation -->
-                <div class="flex items-center gap-2">
+                <!-- Arrow Navigation (Hanya muncul saat hover kursor mouse di area slider) -->
+                <div class="slider-arrow-nav flex items-center gap-2.5">
                     <button @click="prev()"
-                            class="w-10 h-10 rounded-full border border-white/20 bg-white/10 hover:bg-[#851624] text-white backdrop-blur-sm flex items-center justify-center transition-all duration-200 hover:scale-110 hover:border-transparent"
+                            class="w-10 h-10 sm:w-11 sm:h-11 rounded-full border border-white/30 bg-black/40 hover:bg-[#851624] text-white backdrop-blur-md flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95 hover:border-transparent shadow-lg cursor-pointer"
                             aria-label="Previous">
                         <i class="fa-solid fa-chevron-left text-sm"></i>
                     </button>
                     <button @click="next()"
-                            class="w-10 h-10 rounded-full border border-white/20 bg-white/10 hover:bg-[#851624] text-white backdrop-blur-sm flex items-center justify-center transition-all duration-200 hover:scale-110 hover:border-transparent"
+                            class="w-10 h-10 sm:w-11 sm:h-11 rounded-full border border-white/30 bg-black/40 hover:bg-[#851624] text-white backdrop-blur-md flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95 hover:border-transparent shadow-lg cursor-pointer"
                             aria-label="Next">
                         <i class="fa-solid fa-chevron-right text-sm"></i>
                     </button>
@@ -209,47 +277,169 @@
 
     </section>
 
-    <!-- 2. Statistics Counter Strip (Fase 8 & 17) -->
+    <!-- 2. Statistics Counter Strip (Fase 8 & 17) - Bergerak dari Kanan ke Kiri -->
     <section class="relative -mt-10 z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="bg-white rounded-2xl shadow-xl border border-slate-200/80 p-6 sm:p-8 grid grid-cols-2 lg:grid-cols-4 gap-6">
-            <div class="flex items-center gap-4 border-r border-slate-100 last:border-0 pr-4">
-                <div class="w-14 h-14 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-2xl flex-shrink-0">
-                    <i class="fa-solid fa-tree-city"></i>
-                </div>
-                <div>
-                    <p class="text-2xl sm:text-3xl font-extrabold text-slate-900">{{ $villagesCount }}</p>
-                    <p class="text-xs sm:text-sm font-medium text-slate-500">Desa Binaan</p>
-                </div>
-            </div>
+        <div class="bg-white rounded-2xl shadow-xl border border-slate-200/80 overflow-hidden relative py-4 sm:py-5 group"
+             x-data="{ isPaused: false }"
+             @mouseenter="isPaused = true"
+             @mouseleave="isPaused = false"
+             @touchstart.passive="isPaused = true"
+             @touchend.passive="isPaused = false"
+             title="Arahkan kursor atau sentuh untuk menjeda pergerakan statistik">
 
-            <div class="flex items-center gap-4 border-r border-slate-100 last:border-0 pr-4">
-                <div class="w-14 h-14 rounded-2xl bg-teal-50 text-teal-600 flex items-center justify-center text-2xl flex-shrink-0">
-                    <i class="fa-solid fa-users"></i>
-                </div>
-                <div>
-                    <p class="text-2xl sm:text-3xl font-extrabold text-slate-900">{{ number_format($totalPopulation, 0, ',', '.') }}</p>
-                    <p class="text-xs sm:text-sm font-medium text-slate-500">Total Penduduk (Jiwa)</p>
-                </div>
-            </div>
+            <!-- Left & Right Gradient Fade Masks -->
+            <div class="absolute left-0 top-0 bottom-0 w-12 sm:w-20 bg-gradient-to-r from-white via-white/80 to-transparent z-10 pointer-events-none"></div>
+            <div class="absolute right-0 top-0 bottom-0 w-12 sm:w-20 bg-gradient-to-l from-white via-white/80 to-transparent z-10 pointer-events-none"></div>
 
-            <div class="flex items-center gap-4 border-r border-slate-100 last:border-0 pr-4">
-                <div class="w-14 h-14 rounded-2xl bg-sky-50 text-sky-600 flex items-center justify-center text-2xl flex-shrink-0">
-                    <i class="fa-solid fa-hand-holding-heart"></i>
-                </div>
-                <div>
-                    <p class="text-2xl sm:text-3xl font-extrabold text-slate-900">{{ $servicesCount }}</p>
-                    <p class="text-xs sm:text-sm font-medium text-slate-500">Layanan PATEN</p>
-                </div>
-            </div>
+            <!-- Ticker Track: 2 Identical Sets for Seamless Infinite Loop -->
+            <div class="stats-ticker-track" :class="{ 'stats-paused': isPaused }">
 
-            <div class="flex items-center gap-4">
-                <div class="w-14 h-14 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center text-2xl flex-shrink-0">
-                    <i class="fa-solid fa-file-shield"></i>
+                <!-- SET 1 -->
+                <div class="flex items-center">
+                    <!-- 1. Desa Binaan -->
+                    <div class="flex items-center gap-4 shrink-0 px-6 sm:px-8 min-w-[240px] sm:min-w-[270px]">
+                        <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl sm:text-2xl flex-shrink-0 shadow-sm border border-emerald-100/60">
+                            <i class="fa-solid fa-tree-city"></i>
+                        </div>
+                        <div>
+                            <p class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">{{ $villagesCount }}</p>
+                            <p class="text-xs sm:text-sm font-semibold text-slate-700">Desa Binaan</p>
+                            <p class="text-[11px] text-slate-400">Wilayah Administratif</p>
+                        </div>
+                    </div>
+
+                    <div class="h-10 w-px bg-slate-200/80 shrink-0"></div>
+
+                    <!-- 2. Total Penduduk -->
+                    <div class="flex items-center gap-4 shrink-0 px-6 sm:px-8 min-w-[260px] sm:min-w-[290px]">
+                        <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-teal-50 text-teal-600 flex items-center justify-center text-xl sm:text-2xl flex-shrink-0 shadow-sm border border-teal-100/60">
+                            <i class="fa-solid fa-users"></i>
+                        </div>
+                        <div>
+                            <p class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">{{ number_format($totalPopulation, 0, ',', '.') }}</p>
+                            <p class="text-xs sm:text-sm font-semibold text-slate-700">Total Penduduk (Jiwa)</p>
+                            <p class="text-[11px] text-slate-400">Masyarakat Terdata</p>
+                        </div>
+                    </div>
+
+                    <div class="h-10 w-px bg-slate-200/80 shrink-0"></div>
+
+                    <!-- 3. Layanan PATEN -->
+                    <div class="flex items-center gap-4 shrink-0 px-6 sm:px-8 min-w-[240px] sm:min-w-[270px]">
+                        <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-sky-50 text-sky-600 flex items-center justify-center text-xl sm:text-2xl flex-shrink-0 shadow-sm border border-sky-100/60">
+                            <i class="fa-solid fa-hand-holding-heart"></i>
+                        </div>
+                        <div>
+                            <p class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">{{ $servicesCount }}</p>
+                            <p class="text-xs sm:text-sm font-semibold text-slate-700">Layanan PATEN</p>
+                            <p class="text-[11px] text-slate-400">Pelayanan Terpadu</p>
+                        </div>
+                    </div>
+
+                    <div class="h-10 w-px bg-slate-200/80 shrink-0"></div>
+
+                    <!-- 4. Dokumen Publik -->
+                    <div class="flex items-center gap-4 shrink-0 px-6 sm:px-8 min-w-[240px] sm:min-w-[270px]">
+                        <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center text-xl sm:text-2xl flex-shrink-0 shadow-sm border border-amber-100/60">
+                            <i class="fa-solid fa-file-shield"></i>
+                        </div>
+                        <div>
+                            <p class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">{{ $downloadsCount }}</p>
+                            <p class="text-xs sm:text-sm font-semibold text-slate-700">Dokumen Publik</p>
+                            <p class="text-[11px] text-slate-400">Keterbukaan Informasi</p>
+                        </div>
+                    </div>
+
+                    <div class="h-10 w-px bg-slate-200/80 shrink-0"></div>
+
+                    <!-- 5. Visitor / Pengunjung -->
+                    <div class="flex items-center gap-4 shrink-0 px-6 sm:px-8 min-w-[250px] sm:min-w-[280px]">
+                        <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-xl sm:text-2xl flex-shrink-0 shadow-sm border border-indigo-100/60">
+                            <i class="fa-solid fa-chart-line"></i>
+                        </div>
+                        <div>
+                            <p class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">{{ number_format($visitorsCount, 0, ',', '.') }}</p>
+                            <p class="text-xs sm:text-sm font-semibold text-slate-700">Visitor / Pengunjung</p>
+                            <p class="text-[11px] text-slate-400">Kunjungan Terpantau</p>
+                        </div>
+                    </div>
+
+                    <div class="h-10 w-px bg-slate-200/80 shrink-0"></div>
                 </div>
-                <div>
-                    <p class="text-2xl sm:text-3xl font-extrabold text-slate-900">{{ $downloadsCount }}</p>
-                    <p class="text-xs sm:text-sm font-medium text-slate-500">Dokumen Publik</p>
+
+                <!-- SET 2 (Exact Duplicate for Seamless Continuous Loop) -->
+                <div class="flex items-center" aria-hidden="true">
+                    <!-- 1. Desa Binaan -->
+                    <div class="flex items-center gap-4 shrink-0 px-6 sm:px-8 min-w-[240px] sm:min-w-[270px]">
+                        <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl sm:text-2xl flex-shrink-0 shadow-sm border border-emerald-100/60">
+                            <i class="fa-solid fa-tree-city"></i>
+                        </div>
+                        <div>
+                            <p class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">{{ $villagesCount }}</p>
+                            <p class="text-xs sm:text-sm font-semibold text-slate-700">Desa Binaan</p>
+                            <p class="text-[11px] text-slate-400">Wilayah Administratif</p>
+                        </div>
+                    </div>
+
+                    <div class="h-10 w-px bg-slate-200/80 shrink-0"></div>
+
+                    <!-- 2. Total Penduduk -->
+                    <div class="flex items-center gap-4 shrink-0 px-6 sm:px-8 min-w-[260px] sm:min-w-[290px]">
+                        <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-teal-50 text-teal-600 flex items-center justify-center text-xl sm:text-2xl flex-shrink-0 shadow-sm border border-teal-100/60">
+                            <i class="fa-solid fa-users"></i>
+                        </div>
+                        <div>
+                            <p class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">{{ number_format($totalPopulation, 0, ',', '.') }}</p>
+                            <p class="text-xs sm:text-sm font-semibold text-slate-700">Total Penduduk (Jiwa)</p>
+                            <p class="text-[11px] text-slate-400">Masyarakat Terdata</p>
+                        </div>
+                    </div>
+
+                    <div class="h-10 w-px bg-slate-200/80 shrink-0"></div>
+
+                    <!-- 3. Layanan PATEN -->
+                    <div class="flex items-center gap-4 shrink-0 px-6 sm:px-8 min-w-[240px] sm:min-w-[270px]">
+                        <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-sky-50 text-sky-600 flex items-center justify-center text-xl sm:text-2xl flex-shrink-0 shadow-sm border border-sky-100/60">
+                            <i class="fa-solid fa-hand-holding-heart"></i>
+                        </div>
+                        <div>
+                            <p class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">{{ $servicesCount }}</p>
+                            <p class="text-xs sm:text-sm font-semibold text-slate-700">Layanan PATEN</p>
+                            <p class="text-[11px] text-slate-400">Pelayanan Terpadu</p>
+                        </div>
+                    </div>
+
+                    <div class="h-10 w-px bg-slate-200/80 shrink-0"></div>
+
+                    <!-- 4. Dokumen Publik -->
+                    <div class="flex items-center gap-4 shrink-0 px-6 sm:px-8 min-w-[240px] sm:min-w-[270px]">
+                        <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center text-xl sm:text-2xl flex-shrink-0 shadow-sm border border-amber-100/60">
+                            <i class="fa-solid fa-file-shield"></i>
+                        </div>
+                        <div>
+                            <p class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">{{ $downloadsCount }}</p>
+                            <p class="text-xs sm:text-sm font-semibold text-slate-700">Dokumen Publik</p>
+                            <p class="text-[11px] text-slate-400">Keterbukaan Informasi</p>
+                        </div>
+                    </div>
+
+                    <div class="h-10 w-px bg-slate-200/80 shrink-0"></div>
+
+                    <!-- 5. Visitor / Pengunjung -->
+                    <div class="flex items-center gap-4 shrink-0 px-6 sm:px-8 min-w-[250px] sm:min-w-[280px]">
+                        <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-xl sm:text-2xl flex-shrink-0 shadow-sm border border-indigo-100/60">
+                            <i class="fa-solid fa-chart-line"></i>
+                        </div>
+                        <div>
+                            <p class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">{{ number_format($visitorsCount, 0, ',', '.') }}</p>
+                            <p class="text-xs sm:text-sm font-semibold text-slate-700">Visitor / Pengunjung</p>
+                            <p class="text-[11px] text-slate-400">Kunjungan Terpantau</p>
+                        </div>
+                    </div>
+
+                    <div class="h-10 w-px bg-slate-200/80 shrink-0"></div>
                 </div>
+
             </div>
         </div>
     </section>
@@ -263,12 +453,12 @@
                     <div class="relative w-full max-w-sm">
                         <div class="absolute -inset-2 bg-gradient-to-tr from-emerald-600 to-teal-500 rounded-3xl blur-lg opacity-30 transform -rotate-2"></div>
                         <div class="relative bg-white p-3 rounded-3xl shadow-xl border border-slate-100">
-                            <img src="{{ $siteSettings['foto_camat'] ?? 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=600&q=80' }}" 
-                                 alt="Camat Mlarak" 
+                            <img src="{{ $camat?->foto ? $camat->foto_url : ($siteSettings['foto_camat'] ?? 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=600&q=80') }}" 
+                                 alt="{{ $camat?->nama ?? ($siteSettings['nama_camat'] ?? 'Camat Mlarak') }}" 
                                  class="w-full h-96 object-cover rounded-2xl shadow-inner">
                             <div class="p-4 text-center">
-                                <h3 class="font-extrabold text-lg text-slate-900">{{ $siteSettings['nama_camat'] ?? 'Drs. H. Bambang Sujarwo, M.Si' }}</h3>
-                                <p class="text-xs font-semibold text-emerald-700 uppercase tracking-wider">Camat Mlarak Ponorogo</p>
+                                <h3 class="font-extrabold text-lg text-slate-900">{{ $camat?->nama ?? ($siteSettings['nama_camat'] ?? 'Drs. H. Bambang Sujarwo, M.Si') }}</h3>
+                                <p class="text-xs font-semibold text-emerald-700 uppercase tracking-wider">{{ $camat?->jabatan ?? 'Camat Mlarak Ponorogo' }}</p>
                             </div>
                         </div>
                     </div>

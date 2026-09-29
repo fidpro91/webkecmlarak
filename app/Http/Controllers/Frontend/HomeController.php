@@ -10,6 +10,7 @@ use App\Models\Official;
 use App\Models\Service;
 use App\Models\Slider;
 use App\Models\Village;
+use App\Models\Visitor;
 use Illuminate\View\View;
 
 class HomeController extends Controller
@@ -22,8 +23,10 @@ class HomeController extends Controller
         $totalPopulation = Village::sum('jumlah_penduduk');
         $servicesCount = Service::count();
         $downloadsCount = Download::where('status', true)->count();
+        $visitorsCount = Visitor::totalVisitorsCount();
         $services = Service::take(4)->get();
         $officials = Official::orderBy('urutan')->take(4)->get();
+        $camat = Official::getCamat();
         $galleries = Gallery::latest()->take(6)->get();
 
         return view('frontend.home', compact(
@@ -33,8 +36,10 @@ class HomeController extends Controller
             'totalPopulation',
             'servicesCount',
             'downloadsCount',
+            'visitorsCount',
             'services',
             'officials',
+            'camat',
             'galleries'
         ));
     }

@@ -75,6 +75,25 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Statistik & Visitor Counter -->
+                <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200">
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
+                        <i class="fa-solid fa-chart-line text-indigo-600 mr-1"></i> Pengaturan Angka Awal Visitor / Pengunjung
+                    </label>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 items-center">
+                        <div>
+                            <input type="number" name="base_visitor_count" id="base_visitor_count" 
+                                   value="{{ old('base_visitor_count', $settings['base_visitor_count'] ?? 14850) }}" min="0"
+                                   class="w-full text-xs rounded-xl border-slate-200 focus:border-emerald-500 focus:ring-emerald-500 font-bold text-slate-800">
+                            <p class="text-[11px] text-slate-500 mt-1">Angka dasar awal pengunjung yang akan bertambah otomatis saat website dikunjungi.</p>
+                        </div>
+                        <div class="bg-white p-3 rounded-xl border border-slate-200 text-xs">
+                            <span class="text-slate-500 block text-[11px]">Total Counter Saat Ini:</span>
+                            <span class="text-base font-extrabold text-indigo-600">{{ number_format(\App\Models\Visitor::totalVisitorsCount(), 0, ',', '.') }} Pengunjung</span>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- Bagian 2: Kontak & Operasional -->
@@ -180,6 +199,10 @@
 
                     <div>
                         <label for="foto_camat_upload" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Ganti Foto Camat</label>
+                        <div class="flex items-center gap-3 mb-2">
+                            <img src="{{ \App\Models\Setting::fotoCamatUrl() }}" alt="Foto Camat Saat Ini" class="w-12 h-12 rounded-xl object-cover border border-slate-200 shadow-sm">
+                            <span class="text-[11px] text-slate-500">Foto saat ini (terkoneksi dengan Data Jajaran Pejabat)</span>
+                        </div>
                         <input type="file" name="foto_camat_upload" id="foto_camat_upload" accept="image/*"
                                class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100">
                     </div>

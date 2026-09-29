@@ -41,6 +41,7 @@ class SettingController extends Controller
             'sejarah',
             'sambutan_camat',
             'nama_camat',
+            'base_visitor_count',
         ];
 
         foreach ($textFields as $field) {
@@ -68,12 +69,23 @@ class SettingController extends Controller
             Setting::set('logo', 'images/logoponorogo.png');
         }
 
+        $camatOfficial = \App\Models\Official::getCamat();
+        if ($camatOfficial && $request->filled('nama_camat')) {
+            $camatOfficial->nama = $request->input('nama_camat');
+            $camatOfficial->saveQuietly();
+        }
+
         if ($request->hasFile('foto_camat_upload')) {
             $request->validate([
                 'foto_camat_upload' => ['image', 'mimes:png,jpg,jpeg,webp', 'max:10240'],
             ]);
             $camatPath = ImageService::compressAndStore($request->file('foto_camat_upload'), 'settings', 800, 1000);
             Setting::set('foto_camat', Storage::url($camatPath));
+
+            if ($camatOfficial) {
+                $camatOfficial->foto = $camatPath;
+                $camatOfficial->saveQuietly();
+            }
         }
 
         if ($request->hasFile('bagan_struktur_organisasi_upload')) {

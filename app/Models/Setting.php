@@ -31,6 +31,7 @@ class Setting extends Model
         );
 
         Cache::forget("setting_{$key}");
+        Cache::forget('settings_all');
         Cache::forever("setting_{$key}", $value);
 
         return $setting;
@@ -81,5 +82,29 @@ class Setting extends Model
             return asset($custom);
         }
         return asset('images/logoponorogo.png');
+    }
+
+    public static function fotoCamatUrl(): string
+    {
+        $camat = Official::getCamat();
+        if ($camat && !empty($camat->foto)) {
+            return $camat->foto_url;
+        }
+
+        $custom = self::get('foto_camat');
+        if (!empty($custom)) {
+            if (str_starts_with($custom, 'http://') || str_starts_with($custom, 'https://')) {
+                return $custom;
+            }
+            if (str_starts_with($custom, '/storage/') || str_starts_with($custom, 'storage/')) {
+                return asset($custom);
+            }
+            if (str_starts_with($custom, 'settings/') || str_starts_with($custom, 'officials/')) {
+                return \Illuminate\Support\Facades\Storage::url($custom);
+            }
+            return asset($custom);
+        }
+
+        return 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=600&q=80';
     }
 }

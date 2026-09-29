@@ -4,7 +4,7 @@
 @section('page_title', 'Tambah Menu Navigasi')
 
 @section('content')
-<div class="max-w-3xl mx-auto space-y-6">
+<div class="max-w-4xl mx-auto space-y-6">
     <div class="flex items-center justify-between">
         <div>
             <h2 class="text-xl font-bold text-slate-900">Tambah Menu Navigasi</h2>
@@ -100,4 +100,6 @@
         </form>
     </div>
 </div>
+
+@include('admin.menus._tinymce')
 @endsection
