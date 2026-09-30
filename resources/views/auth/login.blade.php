@@ -42,7 +42,6 @@
                 <input id="remember_me" type="checkbox" class="rounded border-slate-300 text-emerald-600 shadow-sm focus:ring-emerald-500" name="remember" checked>
                 <span class="ms-2 text-slate-600 font-medium">Ingat Saya</span>
             </label>
-            <span class="text-[11px] text-slate-400">Default: password</span>
         </div>
 
         <div class="pt-3">
