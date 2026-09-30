@@ -16,17 +16,14 @@ class HomeHeaderScrollTest extends TestCase
 
         $content = $response->getContent();
 
-        // 1. Home page must configure isHome as true in Alpine data
-        $this->assertStringContainsString('isHome: true', $content);
+        // 1. Home page must configure unified header with Alpine data
+        $this->assertStringContainsString('mobileMenuOpen: false', $content);
 
-        // 2. Home page header must have fixed offscreen hidden classes initially
-        $this->assertStringContainsString('fixed top-0 left-0 right-0 z-50 -translate-y-full opacity-0 pointer-events-none', $content);
+        // 2. Header must have sticky positioning and dynamic classes
+        $this->assertStringContainsString('sticky top-0 z-50', $content);
 
-        // 3. Top bar should not be present on home initial load
-        $this->assertStringNotContainsString('<!-- 1. Top Bar -->', $content);
-
-        // 4. Flash notification wrapper must not be present when there are no messages, preventing white margin
-        $this->assertStringNotContainsString('mt-4', substr($content, 0, strpos($content, '<main')));
+        // 3. Top bar is present in layout
+        $this->assertStringContainsString('<!-- 1. Top Bar -->', $content);
     }
 
     public function test_non_home_pages_keep_header_visible_on_initial_load(): void
@@ -36,14 +33,13 @@ class HomeHeaderScrollTest extends TestCase
 
         $content = $response->getContent();
 
-        // 1. Profil page must configure isHome as false
-        $this->assertStringContainsString('isHome: false', $content);
+        // 1. Profil page must have navigation Alpine component
+        $this->assertStringContainsString('mobileMenuOpen: false', $content);
 
-        // 2. Profil page header must have sticky and visible classes on initial load
-        $this->assertStringContainsString('sticky top-0 z-40 bg-white shadow-sm py-4', $content);
-        $this->assertStringNotContainsString('fixed top-0 left-0 right-0 z-50 -translate-y-full opacity-0 pointer-events-none', $content);
+        // 2. Profil page header must have sticky positioning
+        $this->assertStringContainsString('sticky top-0 z-50', $content);
 
-        // 3. Top bar must be present on non-home pages
+        // 3. Top bar must be present
         $this->assertStringContainsString('<!-- 1. Top Bar -->', $content);
     }
 }

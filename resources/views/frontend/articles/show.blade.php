@@ -38,7 +38,7 @@
     <!-- Schema.org JSON-LD -->
     <script type="application/ld+json">
     {
-        "@context": "https://schema.org",
+        "@@context": "https://schema.org",
         "@type": "NewsArticle",
         "headline": @json($article->judul),
         "image": [@json($article->gambar_url)],

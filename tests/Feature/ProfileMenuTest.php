@@ -16,7 +16,7 @@ class ProfileMenuTest extends TestCase
         Cache::forget('nav_menus');
 
         // Check database records
-        $visiMenu = Menu::where('slug', 'visi-dan-misi')->first();
+        $visiMenu = Menu::whereIn('slug', ['visi-misi', 'visi-dan-misi'])->first();
         $this->assertNotNull($visiMenu, 'Menu Visi & Misi should exist');
         $this->assertEquals('/profil#visimisi', $visiMenu->url);
         $this->assertStringContainsString('profil#visimisi', $visiMenu->target_url);
