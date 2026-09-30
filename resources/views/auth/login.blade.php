@@ -28,7 +28,7 @@
             <label for="password" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Kata Sandi</label>
             <div class="relative">
                 <input id="password" class="w-full pl-10 pr-4 py-2.5 text-xs rounded-xl border border-slate-200 focus:border-emerald-500 focus:ring-emerald-500 @error('password') border-rose-500 @enderror"
-                       type="password" name="password" value="password" required autocomplete="current-password" />
+                       type="password" name="password" value="" required autocomplete="current-password" />
                 <i class="fa-solid fa-lock absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
             </div>
             @error('password')
