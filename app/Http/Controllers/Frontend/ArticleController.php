@@ -29,13 +29,25 @@ class ArticleController extends Controller
             }
         }
 
+        if ($request->filled('tag')) {
+            $tag = trim((string)$request->tag);
+            $cleanTag = ltrim($tag, '#');
+            $query->where(function ($q) use ($cleanTag) {
+                $q->where('hashtags', 'like', "%\"#{$cleanTag}\"%")
+                  ->orWhere('hashtags', 'like', "%\"{$cleanTag}\"%")
+                  ->orWhere('hashtags', 'like', "%{$cleanTag}%");
+            });
+        }
+
+        $activeTag = $request->tag ? (str_starts_with($request->tag, '#') ? $request->tag : '#' . $request->tag) : null;
+
         $articles = $query->paginate(9)->withQueryString();
         $categories = Category::withCount(['articles' => function ($q) {
             $q->where('status', 'published');
         }])->get();
         $recentArticles = Article::published()->take(5)->get();
 
-        return view('frontend.articles.index', compact('articles', 'categories', 'recentArticles'));
+        return view('frontend.articles.index', compact('articles', 'categories', 'recentArticles', 'activeTag'));
     }
 
     public function show(string $slug): View
@@ -55,6 +67,17 @@ class ArticleController extends Controller
             $q->where('status', 'published');
         }])->get();
 
-        return view('frontend.articles.show', compact('article', 'relatedArticles', 'categories'));
+        $recentArticles = Article::published()
+            ->where('id', '!=', $article->id)
+            ->take(5)
+            ->get();
+
+        if ($recentArticles->isEmpty()) {
+            $recentArticles = Article::published()->take(5)->get();
+        }
+
+        $popularArticles = $recentArticles;
+
+        return view('frontend.articles.show', compact('article', 'relatedArticles', 'categories', 'recentArticles', 'popularArticles'));
     }
 }

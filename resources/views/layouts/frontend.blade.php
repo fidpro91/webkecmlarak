@@ -6,6 +6,10 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Portal Resmi Pemerintah') - {{ $siteSettings['instansi_nama'] ?? 'Kecamatan Mlarak' }}</title>
     <meta name="description" content="@yield('meta_description', $siteSettings['deskripsi_singkat'] ?? 'Portal Informasi Resmi Pemerintah Kecamatan Mlarak, Kabupaten Ponorogo, Jawa Timur.')">
+    @hasSection('meta_keywords')
+        <meta name="keywords" content="@yield('meta_keywords')">
+    @endif
+    @yield('seo_meta')
     <link rel="icon" type="image/png" href="{{ asset('images/logoponorogo.png') }}">
 
     <!-- Fonts & Scripts -->

@@ -38,6 +38,11 @@ class User extends Authenticatable
         return $this->hasMany(Article::class);
     }
 
+    public function socialMediaAccounts(): HasMany
+    {
+        return $this->hasMany(SocialMediaAccount::class);
+    }
+
     public function isSuperAdmin(): bool
     {
         return $this->role === 'super_admin';

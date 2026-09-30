@@ -158,6 +158,11 @@
                             </span>
                         @endif
                     </a>
+                    <a href="{{ route('admin.profile.edit') }}" 
+                       class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition {{ request()->routeIs('admin.profile.*') ? 'bg-emerald-600 text-white shadow-md' : 'hover:bg-slate-800 hover:text-white' }}">
+                        <i class="fa-solid fa-circle-user w-5 text-center {{ request()->routeIs('admin.profile.*') ? 'text-white' : 'text-cyan-400' }}"></i>
+                        <span>Akun & Sosial Media</span>
+                    </a>
                     <a href="{{ route('admin.settings.edit') }}" 
                        class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition {{ request()->routeIs('admin.settings.*') ? 'bg-emerald-600 text-white shadow-md' : 'hover:bg-slate-800 hover:text-white' }}">
                         <i class="fa-solid fa-sliders w-5 text-center {{ request()->routeIs('admin.settings.*') ? 'text-white' : 'text-indigo-400' }}"></i>
@@ -177,17 +182,17 @@
 
         <!-- Sidebar User Footer -->
         <div class="p-4 bg-slate-950 border-t border-slate-800/80 flex items-center justify-between">
-            <div class="flex items-center gap-3 overflow-hidden">
+            <a href="{{ route('admin.profile.edit') }}" title="Pengaturan Akun & Sosial Media" class="flex items-center gap-3 overflow-hidden group">
                 <img src="{{ Auth::user()->photo_url }}" 
                      alt="{{ Auth::user()->name }}" 
-                     class="w-10 h-10 rounded-full object-cover border-2 border-emerald-500">
+                     class="w-10 h-10 rounded-full object-cover border-2 border-emerald-500 group-hover:border-emerald-400 transition">
                 <div class="overflow-hidden">
-                    <p class="text-sm font-bold text-white truncate">{{ Auth::user()->name }}</p>
+                    <p class="text-sm font-bold text-white truncate group-hover:text-emerald-400 transition">{{ Auth::user()->name }}</p>
                     <span class="inline-block text-[10px] font-semibold uppercase px-2 py-0.5 rounded-full {{ Auth::user()->isSuperAdmin() ? 'bg-amber-400/20 text-amber-300' : 'bg-emerald-400/20 text-emerald-300' }}">
                         {{ Auth::user()->role === 'super_admin' ? 'Super Admin' : 'Admin Operator' }}
                     </span>
                 </div>
-            </div>
+            </a>
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
                 <button type="submit" title="Keluar / Logout" class="text-slate-400 hover:text-rose-400 p-2 transition">
@@ -221,16 +226,16 @@
 
                 <div class="h-6 w-px bg-slate-200"></div>
 
-                <!-- Profile Dropdown -->
-                <div class="flex items-center gap-3">
+                <!-- Profile Link / Badge -->
+                <a href="{{ route('admin.profile.edit') }}" title="Pengaturan Akun & Sosial Media" class="flex items-center gap-3 p-1 rounded-xl hover:bg-slate-50 transition group">
                     <img src="{{ Auth::user()->photo_url }}" 
                          alt="{{ Auth::user()->name }}" 
-                         class="w-9 h-9 rounded-full object-cover border border-slate-200">
+                         class="w-9 h-9 rounded-full object-cover border border-slate-200 group-hover:border-emerald-500 transition">
                     <div class="hidden md:block text-right">
-                        <p class="text-xs font-bold text-slate-800">{{ Auth::user()->name }}</p>
+                        <p class="text-xs font-bold text-slate-800 group-hover:text-emerald-700 transition">{{ Auth::user()->name }}</p>
                         <p class="text-[10px] text-slate-500">{{ Auth::user()->email }}</p>
                     </div>
-                </div>
+                </a>
             </div>
         </header>
 

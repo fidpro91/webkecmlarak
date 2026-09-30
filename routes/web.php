@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\GalleryController as AdminGalleryController;
 use App\Http\Controllers\Admin\MenuController as AdminMenuController;
 use App\Http\Controllers\Admin\MessageController as AdminMessageController;
 use App\Http\Controllers\Admin\OfficialController as AdminOfficialController;
+use App\Http\Controllers\Admin\ProfileController as AdminProfileController;
 use App\Http\Controllers\Admin\ServiceController as AdminServiceController;
 use App\Http\Controllers\Admin\SettingController as AdminSettingController;
 use App\Http\Controllers\Admin\SliderController as AdminSliderController;
@@ -112,6 +113,16 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     // General Settings
     Route::get('/settings', [AdminSettingController::class, 'edit'])->name('settings.edit');
     Route::put('/settings', [AdminSettingController::class, 'update'])->name('settings.update');
+
+    // Profile & Social Media Accounts
+    Route::get('/profile', [AdminProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile', [AdminProfileController::class, 'update'])->name('profile.update');
+    Route::put('/profile/password', [AdminProfileController::class, 'updatePassword'])->name('profile.password');
+    Route::post('/profile/social-accounts', [AdminProfileController::class, 'storeSocialAccount'])->name('profile.social-accounts.store');
+    Route::put('/profile/social-accounts/{socialAccount}', [AdminProfileController::class, 'updateSocialAccount'])->name('profile.social-accounts.update');
+    Route::delete('/profile/social-accounts/{socialAccount}', [AdminProfileController::class, 'destroySocialAccount'])->name('profile.social-accounts.destroy');
+    Route::post('/profile/social-accounts/{socialAccount}/toggle', [AdminProfileController::class, 'toggleSocialAccount'])->name('profile.social-accounts.toggle');
+    Route::post('/profile/social-accounts/{socialAccount}/test', [AdminProfileController::class, 'testSocialAccount'])->name('profile.social-accounts.test');
 
     // Users Management (Super Admin only)
     Route::middleware('super_admin')->group(function () {

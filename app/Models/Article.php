@@ -21,11 +21,42 @@ class Article extends Model
         'user_id',
         'status',
         'published_at',
+        'hashtags',
     ];
 
     protected $casts = [
         'published_at' => 'datetime',
+        'hashtags' => 'array',
     ];
+
+    public function socialPostLogs(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(SocialPostLog::class);
+    }
+
+    public function getFormattedHashtagsAttribute(): array
+    {
+        $raw = $this->hashtags;
+        if (empty($raw)) {
+            return [];
+        }
+
+        $items = is_array($raw) ? $raw : json_decode($raw, true);
+        if (!is_array($items)) {
+            // Jika disimpan sebagai string comma-separated
+            $items = array_map('trim', explode(',', (string)$raw));
+        }
+
+        $formatted = [];
+        foreach ($items as $item) {
+            $item = trim((string)$item);
+            if (!empty($item)) {
+                $formatted[] = str_starts_with($item, '#') ? $item : '#' . $item;
+            }
+        }
+
+        return array_values(array_unique($formatted));
+    }
 
     public function category(): BelongsTo
     {

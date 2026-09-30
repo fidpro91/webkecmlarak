@@ -36,9 +36,13 @@
                     </form>
 
                     <div class="flex items-center gap-2 text-xs text-slate-500 self-start sm:self-auto">
-                        @if(request('kategori') || request('q'))
-                            <span>Filter aktif: <strong>{{ request('kategori') ?: request('q') }}</strong></span>
-                            <a href="{{ route('articles.index') }}" class="text-rose-600 hover:underline font-semibold ml-2">Reset</a>
+                        @if(request('kategori') || request('q') || !empty($activeTag))
+                            <span>Filter aktif: 
+                                <strong class="text-slate-800">{{ $activeTag ?: (request('kategori') ?: request('q')) }}</strong>
+                            </span>
+                            <a href="{{ route('articles.index') }}" class="text-rose-600 hover:underline font-semibold ml-2 inline-flex items-center gap-1">
+                                <i class="fa-solid fa-xmark text-[10px]"></i> Reset Filter
+                            </a>
                         @else
                             <span>Menampilkan {{ $articles->total() }} berita</span>
                         @endif
@@ -76,9 +80,16 @@
                                             {{ Str::limit(strip_tags($article->konten), 110) }}
                                         </p>
                                     </div>
-                                    <div class="pt-4 mt-4 border-t border-slate-100 flex items-center justify-between">
+                                    <div class="pt-4 mt-4 border-t border-slate-100 flex items-center justify-between gap-2">
+                                        <div class="flex flex-wrap items-center gap-1 overflow-hidden">
+                                            @foreach(array_slice($article->formatted_hashtags, 0, 2) as $tag)
+                                                <span class="inline-block text-[10px] font-semibold text-rose-600 bg-rose-50 px-2 py-0.5 rounded-full border border-rose-100">
+                                                    {{ $tag }}
+                                                </span>
+                                            @endforeach
+                                        </div>
                                         <a href="{{ route('articles.show', $article->slug) }}" 
-                                           class="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-700 group-hover:text-emerald-800 transition">
+                                           class="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-700 group-hover:text-emerald-800 transition flex-shrink-0">
                                             <span>Baca Detail</span>
                                             <i class="fa-solid fa-arrow-right text-[10px]"></i>
                                         </a>
