@@ -15,7 +15,7 @@
             <label for="email" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Alamat Email</label>
             <div class="relative">
                 <input id="email" class="w-full pl-10 pr-4 py-2.5 text-xs rounded-xl border border-slate-200 focus:border-emerald-500 focus:ring-emerald-500 @error('email') border-rose-500 @enderror" 
-                       type="email" name="email" value="{{ old('email', 'admin@mlarak.ponorogo.go.id') }}" required autofocus autocomplete="username" />
+                       type="email" name="email" value="{{ old('email', '') }}" required autofocus autocomplete="username" />
                 <i class="fa-solid fa-envelope absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
             </div>
             @error('email')
