@@ -23,6 +23,9 @@
 </head>
 <body class="bg-slate-50 text-slate-800 antialiased flex flex-col min-h-screen selection:bg-emerald-600 selection:text-white">
 
+    <!-- Global Preloader Website -->
+    <x-preloader />
+
     @php
         $isHome = request()->routeIs('home');
     @endphp
