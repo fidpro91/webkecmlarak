@@ -51,12 +51,5 @@
                 <i class="fa-solid fa-right-to-bracket"></i> Masuk ke Panel Admin
             </button>
         </div>
-
-        <div class="mt-4 p-3 bg-slate-50 rounded-xl border border-slate-100 text-[11px] text-slate-500 space-y-1">
-            <p class="font-bold text-slate-700">Akun Pengujian Awal:</p>
-            <p>• Super Admin: <code class="text-emerald-700 font-mono">admin@mlarak.ponorogo.go.id</code></p>
-            <p>• Operator: <code class="text-emerald-700 font-mono">operator@mlarak.ponorogo.go.id</code></p>
-            <p>• Password: <code class="text-emerald-700 font-mono">password</code></p>
-        </div>
     </form>
 </x-guest-layout>
