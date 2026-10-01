@@ -4,6 +4,12 @@
 
 @push('styles')
 <style>
+    :root {
+        --hero-maroon: #3d0710;
+        --hero-maroon-rgb: 61, 7, 16;
+        --hero-maroon-mid: #5c0c16;
+    }
+
     .slider-bottom-controls {
         position: absolute;
         left: 0;
@@ -37,6 +43,111 @@
             visibility: visible;
             transform: translateY(0) scale(1);
             pointer-events: auto;
+        }
+    }
+
+    /* ========================================================
+       Variasi Layout Hero Slider: Classic, Gradient Soft, Split Diagonal
+       ======================================================== */
+
+    /* 1. Classic */
+    .hero--classic .hero-overlay--classic {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(90deg, var(--hero-maroon) 0%, var(--hero-maroon) 32%, rgba(var(--hero-maroon-rgb), 0.7) 48%, rgba(var(--hero-maroon-rgb), 0.25) 62%, transparent 75%);
+        pointer-events: none;
+    }
+    @media (max-width: 639px) {
+        .hero--classic .hero-overlay--classic {
+            background: linear-gradient(180deg, var(--hero-maroon) 0%, rgba(var(--hero-maroon-rgb), 0.88) 45%, rgba(var(--hero-maroon-rgb), 0.4) 100%);
+        }
+    }
+
+    /* 2. Gradient Soft (Foto bergeser ke kanan ~70%, overlay dipersempit) */
+    @media (min-width: 1024px) {
+        .hero--gradient-soft .hero-img--gradient-soft {
+            left: 20%;
+            width: 80%;
+            object-position: right center;
+        }
+    }
+    .hero--gradient-soft .hero-overlay--gradient-soft {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(90deg, var(--hero-maroon) 0%, rgba(var(--hero-maroon-rgb), 0.95) 24%, rgba(var(--hero-maroon-rgb), 0.55) 36%, transparent 52%);
+        pointer-events: none;
+    }
+    @media (max-width: 639px) {
+        .hero--gradient-soft .hero-overlay--gradient-soft {
+            background: linear-gradient(180deg, var(--hero-maroon) 0%, rgba(var(--hero-maroon-rgb), 0.88) 45%, rgba(var(--hero-maroon-rgb), 0.35) 100%);
+        }
+    }
+    .hero-content--gradient-soft {
+        max-width: 480px;
+    }
+    .hero-content--gradient-soft h1,
+    .hero-content--gradient-soft p {
+        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.55);
+    }
+
+    /* 3. Split Miring (Panel marun solid tepi miring, foto utuh di kanan tanpa overlay) */
+    @media (min-width: 640px) {
+        .hero--split-diagonal .hero-img--split-diagonal {
+            left: auto;
+            right: 0;
+            width: 58%;
+        }
+        .hero--split-diagonal .hero-diagonal-panel {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            width: 55%;
+            background-color: var(--hero-maroon);
+            clip-path: polygon(0 0, 100% 0, 86% 100%, 0 100%);
+            z-index: 1;
+            pointer-events: none;
+        }
+        .hero-content--split-diagonal {
+            padding-right: 2.5rem;
+        }
+    }
+    @media (min-width: 1024px) {
+        .hero--split-diagonal .hero-img--split-diagonal {
+            width: 55%;
+        }
+        .hero--split-diagonal .hero-diagonal-panel {
+            width: 50%;
+            clip-path: polygon(0 0, 100% 0, 86% 100%, 0 100%);
+        }
+        .hero-content--split-diagonal {
+            padding-right: 4rem;
+        }
+    }
+    @media (max-width: 639px) {
+        .hero--split-diagonal .hero-img--split-diagonal {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 46%;
+            object-fit: cover;
+        }
+        .hero--split-diagonal .hero-diagonal-panel {
+            position: absolute;
+            top: 44%;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
+            background-color: var(--hero-maroon);
+            clip-path: none;
+            z-index: 1;
+            pointer-events: none;
+        }
+        .hero-content--split-diagonal {
+            justify-content: flex-end;
+            padding-bottom: 5.5rem;
         }
     }
 
@@ -117,8 +228,22 @@
 
             @if($sliders->count() > 0)
                 @foreach($sliders as $index => $slider)
+                    @php
+                        $layout = $slider->layout_style ?? 'classic';
+                        $focal = $slider->focal_point ?? 'center';
+                        $focalClass = match($focal) {
+                            'left' => 'object-left',
+                            'right' => 'object-right',
+                            default => 'object-center',
+                        };
+                        $styleModifier = match($layout) {
+                            'gradient_soft' => 'hero--gradient-soft',
+                            'split_diagonal' => 'hero--split-diagonal',
+                            default => 'hero--classic',
+                        };
+                    @endphp
 
-                    <!-- Slide Image Panel (right side, full bleed) -->
+                    <!-- Slide Image Panel (full bleed) -->
                     <div x-show="activeSlide === {{ $index }}"
                          x-transition:enter="transition-opacity ease-out duration-700"
                          x-transition:enter-start="opacity-0"
@@ -126,13 +251,30 @@
                          x-transition:leave="transition-opacity ease-in duration-400"
                          x-transition:leave-start="opacity-100"
                          x-transition:leave-end="opacity-0"
-                         class="absolute inset-0 w-full h-full z-0">
-                        <!-- Foto slider dengan transparansi mask 30% dari kiri ke kanan menembus ke background merah maroon -->
-                        <img src="{{ $slider->gambar_url }}"
-                             alt="{{ $slider->judul }}"
-                             class="absolute inset-0 w-full h-full object-cover object-center slider-photo-mask">
-                        <!-- Overlay untuk mobile agar teks tetap terbaca tajam -->
-                        <div class="absolute inset-0 bg-gradient-to-r from-[#3d0710] via-[#5c0c16]/85 to-transparent lg:hidden"></div>
+                         class="absolute inset-0 w-full h-full z-0 {{ $styleModifier }}">
+
+                        @if($layout === 'split_diagonal')
+                            <!-- Split Miring: Foto utuh di kanan tanpa overlay -->
+                            <img src="{{ $slider->gambar_url }}"
+                                 alt="{{ $slider->judul }}"
+                                 class="absolute inset-0 w-full h-full object-cover {{ $focalClass }} hero-img--split-diagonal">
+                            <!-- Solid Maroon Panel dengan Sisi Miring (clip-path) -->
+                            <div class="hero-diagonal-panel"></div>
+                        @elseif($layout === 'gradient_soft')
+                            <!-- Gradien Lembut: Foto digeser ke kanan dengan overlay dipersempit -->
+                            <img src="{{ $slider->gambar_url }}"
+                                 alt="{{ $slider->judul }}"
+                                 class="absolute inset-0 w-full h-full object-cover {{ $focalClass }} hero-img--gradient-soft">
+                            <div class="hero-overlay--gradient-soft"></div>
+                        @else
+                            <!-- Klasik: Foto slider dengan transparansi mask & overlay marun standar -->
+                            <img src="{{ $slider->gambar_url }}"
+                                 alt="{{ $slider->judul }}"
+                                 class="absolute inset-0 w-full h-full object-cover {{ $focalClass }} slider-photo-mask">
+                            <div class="hero-overlay--classic"></div>
+                            <!-- Overlay untuk mobile agar teks tetap terbaca tajam -->
+                            <div class="absolute inset-0 bg-gradient-to-r from-[#3d0710] via-[#5c0c16]/85 to-transparent lg:hidden"></div>
+                        @endif
                     </div>
 
                 @endforeach
@@ -142,8 +284,16 @@
                     <div class="relative w-full lg:w-[48%] xl:w-[44%] min-h-[580px] sm:min-h-[640px] lg:min-h-[680px]">
 
                         @foreach($sliders as $index => $slider)
+                            @php
+                                $layout = $slider->layout_style ?? 'classic';
+                                $contentModifier = match($layout) {
+                                    'gradient_soft' => 'hero-content--gradient-soft',
+                                    'split_diagonal' => 'hero-content--split-diagonal',
+                                    default => 'hero-content--classic',
+                                };
+                            @endphp
                             <div x-show="activeSlide === {{ $index }}"
-                                 class="absolute inset-0 flex flex-col justify-center py-16 lg:py-0">
+                                 class="absolute inset-0 flex flex-col justify-center py-16 lg:py-0 {{ $contentModifier }}">
 
                                 <!-- Badge -->
                                 <div x-show="animIn"

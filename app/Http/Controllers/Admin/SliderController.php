@@ -30,6 +30,8 @@ class SliderController extends Controller
             'deskripsi' => ['nullable', 'string', 'max:500'],
             'urutan' => ['required', 'integer', 'min:0'],
             'status' => ['required', 'boolean'],
+            'layout_style' => ['nullable', 'string'],
+            'focal_point' => ['nullable', 'string'],
             'gambar' => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:10240'],
         ], [
             'gambar.required' => 'Gambar slider wajib diunggah.',
@@ -38,6 +40,16 @@ class SliderController extends Controller
             'gambar.max' => 'Ukuran gambar slider tidak boleh melebihi 10 MB.',
             'gambar.uploaded' => 'Gagal mengunggah gambar. Pastikan file tidak melebihi 10 MB dan format gambar valid.',
         ]);
+
+        $validated['layout_style'] = in_array($request->input('layout_style'), [
+            Slider::LAYOUT_CLASSIC,
+            Slider::LAYOUT_GRADIENT_SOFT,
+            Slider::LAYOUT_SPLIT_DIAGONAL,
+        ]) ? $request->input('layout_style') : Slider::LAYOUT_CLASSIC;
+
+        $validated['focal_point'] = in_array($request->input('focal_point'), ['left', 'center', 'right'])
+            ? $request->input('focal_point')
+            : 'center';
 
         if ($request->hasFile('gambar')) {
             $path = ImageService::compressAndStore($request->file('gambar'), 'sliders', 1920, 1080);
@@ -61,6 +73,8 @@ class SliderController extends Controller
             'deskripsi' => ['nullable', 'string', 'max:500'],
             'urutan' => ['required', 'integer', 'min:0'],
             'status' => ['required', 'boolean'],
+            'layout_style' => ['nullable', 'string'],
+            'focal_point' => ['nullable', 'string'],
             'gambar' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:10240'],
         ], [
             'gambar.image' => 'File yang diunggah harus berupa file gambar yang valid.',
@@ -68,6 +82,16 @@ class SliderController extends Controller
             'gambar.max' => 'Ukuran gambar slider tidak boleh melebihi 10 MB.',
             'gambar.uploaded' => 'Gagal mengunggah gambar. Pastikan file tidak melebihi 10 MB dan format gambar valid.',
         ]);
+
+        $validated['layout_style'] = in_array($request->input('layout_style'), [
+            Slider::LAYOUT_CLASSIC,
+            Slider::LAYOUT_GRADIENT_SOFT,
+            Slider::LAYOUT_SPLIT_DIAGONAL,
+        ]) ? $request->input('layout_style') : Slider::LAYOUT_CLASSIC;
+
+        $validated['focal_point'] = in_array($request->input('focal_point'), ['left', 'center', 'right'])
+            ? $request->input('focal_point')
+            : 'center';
 
         if ($request->hasFile('gambar')) {
             // Delete old file if local

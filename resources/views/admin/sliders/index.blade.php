@@ -36,7 +36,22 @@
                                 <img src="{{ $slider->gambar_url }}" alt="{{ $slider->judul }}" class="w-24 h-14 rounded-xl object-cover shadow-sm">
                             </td>
                             <td class="py-3.5 px-4 max-w-md">
-                                <p class="font-bold text-slate-900 text-sm">{{ $slider->judul }}</p>
+                                <div class="flex flex-wrap items-center gap-2">
+                                    <p class="font-bold text-slate-900 text-sm">{{ $slider->judul }}</p>
+                                    @if(($slider->layout_style ?? 'classic') === 'split_diagonal')
+                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-200">
+                                            <i class="fa-solid fa-shapes text-[9px]"></i> Split Miring
+                                        </span>
+                                    @elseif(($slider->layout_style ?? 'classic') === 'gradient_soft')
+                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-200">
+                                            <i class="fa-solid fa-sliders text-[9px]"></i> Gradien Lembut
+                                        </span>
+                                    @else
+                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-semibold bg-slate-100 text-slate-600 border border-slate-200">
+                                            <i class="fa-regular fa-image text-[9px]"></i> Klasik
+                                        </span>
+                                    @endif
+                                </div>
                                 <p class="text-[11px] text-slate-400 line-clamp-1 mt-0.5">{{ $slider->deskripsi ?? '-' }}</p>
                             </td>
                             <td class="py-3.5 px-4 text-center">
