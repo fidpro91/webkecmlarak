@@ -189,4 +189,116 @@ class ImageService
         }
         return $image;
     }
+
+    /**
+     * Simpan gambar dari string Base64 (misal hasil crop di frontend).
+     *
+     * @param string $base64Data
+     * @param string $directory
+     * @param int $maxWidth
+     * @param int $maxHeight
+     * @param int $quality
+     * @param string $disk
+     * @return string|null
+     */
+    public static function storeBase64(
+        string $base64Data,
+        string $directory = 'officials',
+        int $maxWidth = 1200,
+        int $maxHeight = 1200,
+        int $quality = 85,
+        string $disk = 'public'
+    ): ?string {
+        if (empty($base64Data)) {
+            return null;
+        }
+
+        // Ambil header mime jika ada (e.g., data:image/jpeg;base64,...)
+        $extension = 'jpg';
+
+        if (preg_match('/^data:(image\/(\w+));base64,/', $base64Data, $matches)) {
+            $extension = strtolower($matches[2]);
+            if ($extension === 'jpeg') {
+                $extension = 'jpg';
+            }
+            $base64Data = substr($base64Data, strpos($base64Data, ',') + 1);
+        }
+
+        $decoded = base64_decode($base64Data);
+        if ($decoded === false || empty($decoded)) {
+            return null;
+        }
+
+        $normalizedExt = in_array($extension, ['jpg', 'png', 'webp']) ? $extension : 'jpg';
+        $filename = Str::random(40) . '.' . $normalizedExt;
+        $targetPath = trim($directory, '/') . '/' . $filename;
+
+        // Jika GD tidak ada, langsung simpan binary
+        if (!extension_loaded('gd')) {
+            Storage::disk($disk)->put($targetPath, $decoded);
+            return $targetPath;
+        }
+
+        try {
+            $image = @imagecreatefromstring($decoded);
+            if (!$image) {
+                Storage::disk($disk)->put($targetPath, $decoded);
+                return $targetPath;
+            }
+
+            $origWidth = imagesx($image);
+            $origHeight = imagesy($image);
+
+            if ($origWidth > $maxWidth || $origHeight > $maxHeight) {
+                $ratio = min($maxWidth / $origWidth, $maxHeight / $origHeight);
+                $newWidth = max(1, (int) round($origWidth * $ratio));
+                $newHeight = max(1, (int) round($origHeight * $ratio));
+
+                $resized = imagecreatetruecolor($newWidth, $newHeight);
+
+                if (in_array($normalizedExt, ['png', 'webp'])) {
+                    imagealphablending($resized, false);
+                    imagesavealpha($resized, true);
+                    $transparent = imagecolorallocatealpha($resized, 255, 255, 255, 127);
+                    imagefilledrectangle($resized, 0, 0, $newWidth, $newHeight, $transparent);
+                }
+
+                imagecopyresampled($resized, $image, 0, 0, 0, 0, $newWidth, $newHeight, $origWidth, $origHeight);
+                imagedestroy($image);
+                $image = $resized;
+            }
+
+            ob_start();
+            switch ($normalizedExt) {
+                case 'png':
+                    imagealphablending($image, false);
+                    imagesavealpha($image, true);
+                    imagepng($image, null, 8);
+                    break;
+                case 'webp':
+                    imagealphablending($image, false);
+                    imagesavealpha($image, true);
+                    imagewebp($image, null, $quality);
+                    break;
+                case 'jpg':
+                default:
+                    imagejpeg($image, null, $quality);
+                    break;
+            }
+            $binaryData = ob_get_clean();
+            imagedestroy($image);
+
+            if (!empty($binaryData)) {
+                Storage::disk($disk)->put($targetPath, $binaryData);
+                return $targetPath;
+            }
+
+            Storage::disk($disk)->put($targetPath, $decoded);
+            return $targetPath;
+        } catch (\Throwable $e) {
+            Log::warning('ImageService storeBase64 fallback: ' . $e->getMessage());
+            Storage::disk($disk)->put($targetPath, $decoded);
+            return $targetPath;
+        }
+    }
 }

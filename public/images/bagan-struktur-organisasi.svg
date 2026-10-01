@@ -80,7 +80,7 @@
     <rect width="320" height="90" rx="14" fill="#ffffff" stroke="#059669" stroke-width="2" />
     <path d="M 0 14 Q 0 0 14 0 L 306 0 Q 320 0 320 14 L 320 34 L 0 34 Z" fill="url(#camatGrad)" />
     <text x="160" y="23" text-anchor="middle" fill="#ffffff" font-size="13" font-weight="800" letter-spacing="1.5">CAMAT</text>
-    <text id="nama-camat" x="160" y="56" text-anchor="middle" fill="#0f172a" font-size="14" font-weight="700">JOKO SETIAWAN, S.STP, M.Si</text>
+    <text id="nama-camat" x="160" y="56" text-anchor="middle" fill="#0f172a" font-size="12.5" font-weight="700">Drs. H. Bambang Sujarwo, M.Si</text>
     <text id="ket-camat" x="160" y="75" text-anchor="middle" fill="#047857" font-size="11" font-weight="600">Pembina Tingkat I (IV/b)</text>
   </g>
 
@@ -98,7 +98,7 @@
     <rect width="320" height="95" rx="14" fill="#ffffff" stroke="#0d9488" stroke-width="2" />
     <path d="M 0 14 Q 0 0 14 0 L 306 0 Q 320 0 320 14 L 320 34 L 0 34 Z" fill="url(#sekcamGrad)" />
     <text x="160" y="23" text-anchor="middle" fill="#ffffff" font-size="12" font-weight="800" letter-spacing="1">SEKRETARIS KECAMATAN</text>
-    <text id="nama-sekcam" x="160" y="57" text-anchor="middle" fill="#0f172a" font-size="13" font-weight="700">JOANA DA COSTA, S.Sos, M.Si</text>
+    <text id="nama-sekcam" x="160" y="57" text-anchor="middle" fill="#0f172a" font-size="13" font-weight="700">Wahyu Hidayat, S.Sos, M.M</text>
     <text id="ket-sekcam" x="160" y="75" text-anchor="middle" fill="#0d9488" font-size="11" font-weight="600">Penata Tingkat I (III/d)</text>
   </g>
 
@@ -108,7 +108,7 @@
     <rect width="270" height="62" rx="10" fill="#ffffff" stroke="#14b8a6" stroke-width="1.5" />
     <path d="M 0 10 Q 0 0 10 0 L 260 0 Q 270 0 270 10 L 270 24 L 0 24 Z" fill="#0f766e" />
     <text x="135" y="16" text-anchor="middle" fill="#ffffff" font-size="10.5" font-weight="700">SUBBAG PERENCANAAN &amp; KEUANGAN</text>
-    <text id="nama-subbag-keuangan" x="135" y="44" text-anchor="middle" fill="#1e293b" font-size="11" font-weight="600">SUBOLO, S.Sos</text>
+    <text id="nama-subbag-keuangan" x="135" y="44" text-anchor="middle" fill="#1e293b" font-size="10" font-weight="600">Penyusunan Anggaran &amp; Pelaporan</text>
   </g>
 
   <!-- Subbag Umum & Kepegawaian (x=1040, y=320, w=270, h=62) -->
@@ -116,7 +116,7 @@
     <rect width="270" height="62" rx="10" fill="#ffffff" stroke="#14b8a6" stroke-width="1.5" />
     <path d="M 0 10 Q 0 0 10 0 L 260 0 Q 270 0 270 10 L 270 24 L 0 24 Z" fill="#0f766e" />
     <text x="135" y="16" text-anchor="middle" fill="#ffffff" font-size="10.5" font-weight="700">SUBBAG UMUM &amp; KEPEGAWAIAN</text>
-    <text id="nama-subbag-umum" x="135" y="44" text-anchor="middle" fill="#1e293b" font-size="11" font-weight="600">YUNAN AGUNG PRABAKTI, SH</text>
+    <text id="nama-subbag-umum" x="135" y="44" text-anchor="middle" fill="#1e293b" font-size="10" font-weight="600">Tata Usaha, Aset &amp; Personalia</text>
   </g>
 
   <!-- LEVEL 3: 5 SEKSI KECAMATAN -->
@@ -125,7 +125,7 @@
     <rect width="220" height="165" rx="12" fill="#ffffff" stroke="#3b82f6" stroke-width="1.8" />
     <path d="M 0 12 Q 0 0 12 0 L 208 0 Q 220 0 220 12 L 220 32 L 0 32 Z" fill="#1d4ed8" />
     <text x="110" y="21" text-anchor="middle" fill="#ffffff" font-size="11" font-weight="800">SEKSI TATA PEMERINTAHAN</text>
-    <text id="nama-kasi-tapem" x="110" y="54" text-anchor="middle" fill="#0f172a" font-size="10.5" font-weight="700">ELVA RAHMAWATI, S.E., M.Ak</text>
+    <text id="nama-kasi-tapem" x="110" y="54" text-anchor="middle" fill="#0f172a" font-size="10.5" font-weight="700">Endang Sulistyowati, S.IP</text>
     <text id="ket-kasi-tapem" x="110" y="70" text-anchor="middle" fill="#2563eb" font-size="10.5" font-weight="600">Kepala Seksi</text>
     <line x1="20" y1="80" x2="200" y2="80" stroke="#e2e8f0" stroke-width="1" />
     <text x="110" y="100" text-anchor="middle" fill="#475569" font-size="10">Lingkup Pelayanan:</text>
@@ -139,7 +139,7 @@
     <rect width="220" height="165" rx="12" fill="#ffffff" stroke="#e11d48" stroke-width="1.8" />
     <path d="M 0 12 Q 0 0 12 0 L 208 0 Q 220 0 220 12 L 220 32 L 0 32 Z" fill="#be123c" />
     <text x="110" y="21" text-anchor="middle" fill="#ffffff" font-size="11" font-weight="800">SEKSI TRANTIBUM</text>
-    <text id="nama-kasi-trantib" x="110" y="54" text-anchor="middle" fill="#0f172a" font-size="12" font-weight="700">SUGENG PRIYANTORO</text>
+    <text id="nama-kasi-trantib" x="110" y="54" text-anchor="middle" fill="#0f172a" font-size="10.5" font-weight="700">Kapten (Purn) Sunardi, S.H</text>
     <text id="ket-kasi-trantib" x="110" y="70" text-anchor="middle" fill="#e11d48" font-size="10.5" font-weight="600">Kepala Seksi</text>
     <line x1="20" y1="80" x2="200" y2="80" stroke="#e2e8f0" stroke-width="1" />
     <text x="110" y="100" text-anchor="middle" fill="#475569" font-size="10">Lingkup Pelayanan:</text>
@@ -153,7 +153,7 @@
     <rect width="220" height="165" rx="12" fill="#ffffff" stroke="#8b5cf6" stroke-width="1.8" />
     <path d="M 0 12 Q 0 0 12 0 L 208 0 Q 220 0 220 12 L 220 32 L 0 32 Z" fill="#6d28d9" />
     <text x="110" y="21" text-anchor="middle" fill="#ffffff" font-size="11" font-weight="800">SEKSI KESEJAHTERAAN SOSIAL</text>
-    <text id="nama-kasi-kesra" x="110" y="54" text-anchor="middle" fill="#0f172a" font-size="12" font-weight="700">BAMBANG KUNCORO H, SH</text>
+    <text id="nama-kasi-kesra" x="110" y="54" text-anchor="middle" fill="#0f172a" font-size="12" font-weight="700">Dra. Siti Rahmawati</text>
     <text id="ket-kasi-kesra" x="110" y="70" text-anchor="middle" fill="#8b5cf6" font-size="10.5" font-weight="600">Kepala Seksi</text>
     <line x1="20" y1="80" x2="200" y2="80" stroke="#e2e8f0" stroke-width="1" />
     <text x="110" y="100" text-anchor="middle" fill="#475569" font-size="10">Lingkup Pelayanan:</text>
@@ -167,7 +167,7 @@
     <rect width="220" height="165" rx="12" fill="#ffffff" stroke="#f59e0b" stroke-width="1.8" />
     <path d="M 0 12 Q 0 0 12 0 L 208 0 Q 220 0 220 12 L 220 32 L 0 32 Z" fill="#d97706" />
     <text x="110" y="21" text-anchor="middle" fill="#ffffff" font-size="11" font-weight="800">SEKSI PMD</text>
-    <text id="nama-kasi-pmd" x="110" y="54" text-anchor="middle" fill="#0f172a" font-size="10.5" font-weight="700">DIAN PUSPITA MANDASARI, SE</text>
+    <text id="nama-kasi-pmd" x="110" y="54" text-anchor="middle" fill="#0f172a" font-size="12" font-weight="700">Ir. Agus Supriyanto</text>
     <text id="ket-kasi-pmd" x="110" y="70" text-anchor="middle" fill="#b45309" font-size="10.5" font-weight="600">Kepala Seksi</text>
     <line x1="20" y1="80" x2="200" y2="80" stroke="#e2e8f0" stroke-width="1" />
     <text x="110" y="100" text-anchor="middle" fill="#475569" font-size="10">Lingkup Pelayanan:</text>
@@ -181,7 +181,7 @@
     <rect width="220" height="165" rx="12" fill="#ffffff" stroke="#10b981" stroke-width="1.8" />
     <path d="M 0 12 Q 0 0 12 0 L 208 0 Q 220 0 220 12 L 220 32 L 0 32 Z" fill="#047857" />
     <text x="110" y="21" text-anchor="middle" fill="#ffffff" font-size="11" font-weight="800">SEKSI PELAYANAN UMUM</text>
-    <text id="nama-kasi-pelayanan" x="110" y="54" text-anchor="middle" fill="#0f172a" font-size="10.5" font-weight="700">SRI MULYANINGSIH, S.S0S. Msi</text>
+    <text id="nama-kasi-pelayanan" x="110" y="54" text-anchor="middle" fill="#0f172a" font-size="12" font-weight="700">Rina Wijayanti, S.E</text>
     <text id="ket-kasi-pelayanan" x="110" y="70" text-anchor="middle" fill="#047857" font-size="10.5" font-weight="600">Kepala Seksi</text>
     <line x1="20" y1="80" x2="200" y2="80" stroke="#e2e8f0" stroke-width="1" />
     <text x="110" y="100" text-anchor="middle" fill="#475569" font-size="10">Lingkup Pelayanan:</text>

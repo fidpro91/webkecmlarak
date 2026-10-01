@@ -84,11 +84,16 @@ class OfficialController extends Controller
             'jabatan' => ['required', 'string', 'max:150'],
             'urutan' => ['required', 'integer', 'min:0'],
             'foto' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:10240'],
+            'foto_cropped' => ['nullable', 'string'],
         ]);
 
-        if ($request->hasFile('foto')) {
+        if ($request->filled('foto_cropped')) {
+            $validated['foto'] = ImageService::storeBase64($request->input('foto_cropped'), 'officials', 800, 800);
+        } elseif ($request->hasFile('foto')) {
             $validated['foto'] = ImageService::compressAndStore($request->file('foto'), 'officials', 800, 800);
         }
+
+        unset($validated['foto_cropped']);
 
         $official = Official::create($validated);
 
@@ -110,14 +115,28 @@ class OfficialController extends Controller
             'jabatan' => ['required', 'string', 'max:150'],
             'urutan' => ['required', 'integer', 'min:0'],
             'foto' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:10240'],
+            'foto_cropped' => ['nullable', 'string'],
+            'hapus_foto' => ['nullable', 'boolean'],
         ]);
 
-        if ($request->hasFile('foto')) {
+        if ($request->boolean('hapus_foto')) {
+            if ($official->foto && !str_starts_with($official->foto, 'http') && Storage::disk('public')->exists($official->foto)) {
+                Storage::disk('public')->delete($official->foto);
+            }
+            $validated['foto'] = null;
+        } elseif ($request->filled('foto_cropped')) {
+            if ($official->foto && !str_starts_with($official->foto, 'http') && Storage::disk('public')->exists($official->foto)) {
+                Storage::disk('public')->delete($official->foto);
+            }
+            $validated['foto'] = ImageService::storeBase64($request->input('foto_cropped'), 'officials', 800, 800);
+        } elseif ($request->hasFile('foto')) {
             if ($official->foto && !str_starts_with($official->foto, 'http') && Storage::disk('public')->exists($official->foto)) {
                 Storage::disk('public')->delete($official->foto);
             }
             $validated['foto'] = ImageService::compressAndStore($request->file('foto'), 'officials', 800, 800);
         }
+
+        unset($validated['foto_cropped'], $validated['hapus_foto']);
 
         $official->update($validated);
 
